@@ -18,7 +18,7 @@ const Chat = () => {
   return (
     <div className="h-full flex flex-col bg-gray-800 text-white w-96 overflow-hidden">
       <div className="p-4 flex-shrink-0">
-        <h2 className="text-xl font-semibold">Group Chat</h2>
+        <h2 className="text-xl font-semibold text-center">Group Chat</h2>
       </div>
       
       <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">

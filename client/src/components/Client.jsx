@@ -29,10 +29,10 @@ const Client = ({ clients, currentUsername, onCopyRoomId, onLeaveRoom }) => {
     return (
         <div className="h-full flex flex-col bg-gray-800 text-white w-96 overflow-hidden">
             <div className="p-4 flex-shrink-0">
-                <h2 className="text-xl font-semibold">Connected Users</h2>
+                <h2 className="text-xl font-semibold text-center">Connected Users</h2>
             </div>
             
-            <div className="flex-1 p-4 overflow-y-auto custom-scrollbar">
+            <div className="flex-1 p-2 overflow-y-auto custom-scrollbar">
                 {/* Current User Section */}
                 {currentUserData && (
                     <div className="mb-4">

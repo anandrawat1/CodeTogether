@@ -74,7 +74,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
     }, [socketRef.current, roomId]);
 
     return (
-        <div className="min-h-[calc(100vh-20px)] text-[20px] leading-[1.6] pt-5">
+        <div className="min-h-[calc(100vh-20px)] text-[19px] leading-[1.6] p-2">
             <textarea id="realtimeEditor"></textarea>
         </div>
     );
