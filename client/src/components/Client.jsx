@@ -12,8 +12,7 @@ const ClientAvatar = ({ username, isCurrentUser = false }) => {
                 round="8px" 
             />
             <span className={`text-white mt-2 text-center ${isCurrentUser ? 'font-medium' : ''}`}>
-                {username}
-                {isCurrentUser && <span className="text-green-400 text-sm inline-block ml-1">•</span>}
+                {username} {isCurrentUser && <span className="text-green-400 text-sm">•</span>}
             </span>
         </div>
     );
@@ -33,7 +32,7 @@ const Client = ({ clients, currentUsername, onCopyRoomId, onLeaveRoom }) => {
                 <h2 className="text-xl font-semibold">Connected Users</h2>
             </div>
             
-            <div className="flex-1 p-4 space-y-4 overflow-y-auto custom-scrollbar">
+            <div className="flex-1 p-4 overflow-y-auto custom-scrollbar">
                 {/* Current User Section */}
                 {currentUserData && (
                     <div className="mb-4">
@@ -45,7 +44,7 @@ const Client = ({ clients, currentUsername, onCopyRoomId, onLeaveRoom }) => {
                 )}
 
                 {/* Other Users Grid */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-3 gap-3">
                     {otherUsers.map((client) => (
                         <ClientAvatar 
                             key={client.socketId} 

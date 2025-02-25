@@ -17,7 +17,7 @@ const Home = () => {
 
     const joinRoom = () => {
         if (!roomId || !username) {
-            toast.error('ROOM ID & username is required');
+            toast.error('Room ID & username required');
             return;
         }
 
@@ -76,11 +76,17 @@ const Home = () => {
                     </p>
                 </div>
             </div>
-            <footer className="mt-8 text-gray-400 text-sm">
+
+            
+            <footer className="mt-3 text-gray-700 text-sm">
                 <p className="text-center">
-                    Built with{' '}
-                    <span role="img" aria-label="heart">💻</span>{' '}
-                    for collaborative coding
+                    Built for collaborative coding. <br /> © {new Date().getFullYear()} | &nbsp;
+                    <a 
+                        href="https://github.com/shomik-das" 
+                        className="text-blue-400 hover:text-blue-300 transition-colors duration-200"
+                    >
+                    shomik das
+                    </a>
                 </p>
             </footer>
         </div>

@@ -30,7 +30,7 @@ const Chat = () => {
         ))}
       </div>
 
-      <form onSubmit={handleSendMessage} className="p-4 flex-shrink-0">
+      <form onSubmit={handleSendMessage} className="p-4  flex-shrink-0">
         <div className="flex items-center gap-3">
           <input
             type="text"
