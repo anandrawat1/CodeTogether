@@ -1,18 +1,94 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-const Chat = () => {
+const ACTIONS = {
+  JOIN: "join",
+  JOINED: "joined",
+  DISCONNECTED: "disconnected",
+  CODE_CHANGE: "code-change",
+  SYNC_CODE: "sync-code",
+  LEAVE: "leave",
+  SEND_MESSAGE: "send-message",
+  RECEIVE_MESSAGE: "receive-message",
+  FETCH_MESSAGES: "fetch-messages",
+  GET_MESSAGES: "get-messages",
+};
+
+const Chat = ({ socketRef, roomId, username }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+  
+  useEffect(() => {
+    if (!socketRef.current || !socketRef.current.connected) return;
+  
+    console.log('Setting up chat listeners for:', roomId);
+    socketRef.current.emit(ACTIONS.FETCH_MESSAGES, { roomId });
+  
+    const handleFetchedMessages = (data) => {
+      console.log('Fetched messages:', data.messages);
+      setMessages(data.messages || []); // Ensure it's an array
+    };
+  
+    const handleNewMessage = (messageData) => {
+      console.log('Received new message:', messageData);
+      setMessages((prev) => [...prev, messageData]);
+    };
+  
+    socketRef.current.on(ACTIONS.RECEIVE_MESSAGE, handleNewMessage);
+    socketRef.current.on(ACTIONS.FETCH_MESSAGES, handleFetchedMessages); 
+  
+    return () => {
+      socketRef.current.off(ACTIONS.RECEIVE_MESSAGE, handleNewMessage);
+      socketRef.current.off(ACTIONS.FETCH_MESSAGES, handleFetchedMessages);
+    };
+  }, [roomId]);
+  
+
+
+  // Scroll to bottom when messages update
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
-    if (newMessage.trim()) {
-      setMessages([...messages, { text: newMessage, sender: 'You' }]);
-      //socket event  (message,sendername)//emie
-      //listen backend(emit)(message,name)
-      //listen(append div)(array update)   //open useeefect(message)
-      setNewMessage('');
+    if (!socketRef.current) {
+      console.log('Cannot send message: Socket not initialized');
+      return;
     }
+
+    if (!socketRef.current.connected) {
+      console.log('Cannot send message: Socket not connected');
+      return;
+    }
+
+    if (newMessage.trim()) {
+      const messageData = {
+        roomId,
+        message: newMessage.trim(),
+        username,
+      };
+      
+      console.log('Sending message:', messageData);
+      
+      try {
+        socketRef.current.emit(ACTIONS.SEND_MESSAGE, messageData);
+        setNewMessage('');
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
+    }
+  };
+
+  const formatTimestamp = (timestamp) => {
+    return new Date(timestamp).toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
   };
 
   return (
@@ -22,15 +98,34 @@ const Chat = () => {
       </div>
       
       <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
-        {messages.map((message, index) => (
-          <div key={index} className="bg-gray-700 rounded-lg p-3">
-            <p className="text-sm font-semibold">{message.sender}</p>
-            <p className="text-gray-300 break-words">{message.text}</p>
-          </div>
-        ))}
+        {messages && messages.length > 0 ? (
+          messages.map((message) => (
+            <div 
+              key={message.id || message.timestamp} 
+              className={`rounded-lg p-3 ${
+                message.username === username 
+                  ? 'bg-green-600 ml-auto' 
+                  : 'bg-gray-700'
+              } max-w-[85%]`}
+            >
+              <div className="flex justify-between items-start mb-1">
+                <p className="text-sm font-semibold">
+                  {message.username === username ? 'You' : message.username}
+                </p>
+                <p className="text-xs text-gray-300 ml-2">
+                  {formatTimestamp(message.timestamp)}
+                </p>
+              </div>
+              <p className="text-gray-100 break-words">{message.message}</p>
+            </div>
+          ))
+        ) : (
+          <div className="text-center text-gray-400">No messages yet</div>
+        )}
+        <div ref={messagesEndRef} />
       </div>
 
-      <form onSubmit={handleSendMessage} className="p-4  flex-shrink-0">
+      <form onSubmit={handleSendMessage} className="p-4 flex-shrink-0">
         <div className="flex items-center gap-3">
           <input
             type="text"
@@ -41,9 +136,13 @@ const Chat = () => {
           />
           <button
             type="submit"
-            className="bg-green-500 text-white px-6 py-2.5 rounded hover:bg-green-600 transition-colors whitespace-nowrap flex-shrink-0 font-medium"
+            disabled={!socketRef.current?.connected}
+            className={`px-6 py-2.5 rounded transition-colors whitespace-nowrap flex-shrink-0 font-medium
+              ${socketRef.current?.connected 
+                ? 'bg-green-500 hover:bg-green-600 text-white'
+                : 'bg-gray-500 cursor-not-allowed text-gray-300'}`}
           >
-            Send
+            {socketRef.current?.connected ? 'Send' : 'Connecting...'}
           </button>
         </div>
       </form>

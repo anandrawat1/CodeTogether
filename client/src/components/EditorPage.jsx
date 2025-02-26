@@ -64,8 +64,9 @@ const EditorPage = () => {
             }
         return () => {
             if (socketRef.current) {
-                socketRef.current.disconnect();
-                socketRef.current = null;
+                socketRef.current.off(ACTIONS.JOINED);
+                socketRef.current.off(ACTIONS.DISCONNECTED);
+                socketRef.current.off(ACTIONS.SYNC_CODE);
             }
         };
     }, [roomId, username, navigate]);

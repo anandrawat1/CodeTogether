@@ -23,6 +23,7 @@ const io = new Server(server, {
 const userSocketMap = {};
 const roomCodeMap = {};
 const roomUsers = {}; // Track users in each room
+const roomMessages = {}; // Store messages for each room
 
 function getAllConnectedClients(roomId) {
   // Get unique users in the room based on username
@@ -41,9 +42,10 @@ function getAllConnectedClients(roomId) {
 }
 
 io.on("connection", (socket) => {
-  //console.log('Socket connected:', socket.id);
+  console.log('Socket connected:', socket.id);
 
   socket.on(ACTIONS.JOIN, ({ roomId, username }) => {
+    console.log('User joined:', { roomId, username, socketId: socket.id });
     // Remove any existing connections for this username in this room
     const existingSockets = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
     existingSockets.forEach((existingSocketId) => {
@@ -80,6 +82,11 @@ io.on("connection", (socket) => {
     if (roomCodeMap[roomId]) {
       socket.emit(ACTIONS.CODE_CHANGE, { code: roomCodeMap[roomId] });
     }
+
+    // Initialize room messages if needed
+    if (!roomMessages[roomId]) {
+      roomMessages[roomId] = [];
+    }
   });
 
   socket.on(ACTIONS.CODE_CHANGE, ({ roomId, code }) => {
@@ -98,6 +105,42 @@ io.on("connection", (socket) => {
     if (roomCodeMap[roomId]) {
       io.to(socketId).emit(ACTIONS.CODE_CHANGE, { code: roomCodeMap[roomId] });
     }
+  });
+
+  // Handle new chat messages
+  socket.on(ACTIONS.SEND_MESSAGE, ({ roomId, message, username }) => {
+    console.log('Server received message:', { roomId, message, username });
+    
+    const messageData = {
+      id: Date.now(),
+      username,
+      message,
+      timestamp: new Date().toISOString(),
+    };
+    
+    // Store the message
+    if (!roomMessages[roomId]) {
+      roomMessages[roomId] = [];
+    }
+    roomMessages[roomId].push(messageData);
+    console.log('Messages in room', roomId, ':', roomMessages[roomId]);
+    
+    // Limit stored messages to last 100
+    if (roomMessages[roomId].length > 100) {
+      roomMessages[roomId] = roomMessages[roomId].slice(-100);
+    }
+    
+    // Broadcast to all users in the room
+    console.log('Broadcasting message to room:', roomId);
+    io.to(roomId).emit(ACTIONS.RECEIVE_MESSAGE, messageData);
+  });
+
+  // Handle fetch messages request
+  socket.on(ACTIONS.FETCH_MESSAGES, ({ roomId }) => {
+    console.log('Fetching messages for room:', roomId);
+    const messages = roomMessages[roomId] || [];
+    console.log('Found messages:', messages);
+    socket.emit(ACTIONS.FETCH_MESSAGES, { messages });
   });
 
   socket.on("disconnecting", () => {
@@ -122,6 +165,7 @@ io.on("connection", (socket) => {
             if (roomUsers[roomId].size === 0) {
               delete roomUsers[roomId];
               delete roomCodeMap[roomId];
+              delete roomMessages[roomId]; // Clean up messages when room is empty
             }
           }
         }
