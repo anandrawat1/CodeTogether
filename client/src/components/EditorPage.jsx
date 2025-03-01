@@ -5,6 +5,7 @@ import Sidebar from './Sidebar';
 import Client from './Client';
 import Editor from './Editor';
 import Chat from './Chat';
+import Whiteboard from './Whiteboard';
 import { initSocket } from '../Socket';
 
 const ACTIONS = {
@@ -82,17 +83,42 @@ const EditorPage = () => {
 
     if (!username) return <Navigate to="/" />;
 
+    const renderMainContent = () => {
+        switch (sidebarContent) {
+            case 'chat':
+                return (
+                    <>
+                        <Chat socketRef={socketRef} roomId={roomId} username={username} />
+                        <div className="flex-1">
+                            <Editor socketRef={socketRef} roomId={roomId} onCodeChange={(code) => (codeRef.current = code)} />
+                        </div>
+                    </>
+                );
+            case 'draw':
+                return (
+                    <>
+                        <Client clients={clients} currentUsername={username} onCopyRoomId={copyRoomId} onLeaveRoom={() => navigate('/')} />
+                        <div className="flex-1">
+                            <Whiteboard />
+                        </div>
+                    </>
+                );
+            default:
+                return (
+                    <>
+                        <Client clients={clients} currentUsername={username} onCopyRoomId={copyRoomId} onLeaveRoom={() => navigate('/')} />
+                        <div className="flex-1">
+                            <Editor socketRef={socketRef} roomId={roomId} onCodeChange={(code) => (codeRef.current = code)} />
+                        </div>
+                    </>
+                );
+        }
+    };
+
     return (
         <div className="flex h-screen">
             <Sidebar onToggle={setSidebarContent} />
-            {sidebarContent === 'chat' ? (
-                <Chat socketRef={socketRef} roomId={roomId} username={username} />
-            ) : (
-                <Client clients={clients} currentUsername={username} onCopyRoomId={copyRoomId} onLeaveRoom={() => navigate('/')} />
-            )}
-            <div className="flex-1">
-                <Editor socketRef={socketRef} roomId={roomId} onCodeChange={(code) => (codeRef.current = code)} />
-            </div>
+            {renderMainContent()}
         </div>
     );
 };

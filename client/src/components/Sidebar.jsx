@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaComments, FaUsers } from 'react-icons/fa';
+import { FaComments, FaUsers, FaPencilAlt } from 'react-icons/fa';
 
 const Sidebar = ({ onToggle }) => {
   const [activeTab, setActiveTab] = useState('clients');
@@ -32,6 +32,16 @@ const Sidebar = ({ onToggle }) => {
           }`}
         >
           <FaComments size={24} />
+        </button>
+        <button
+          onClick={() => handleTabChange('draw')}
+          className={`p-3 rounded-lg transition-all ${
+            activeTab === 'draw'
+              ? 'bg-gray-900 text-white'
+              : 'text-gray-400 hover:bg-gray-800'
+          }`}
+        >
+          <FaPencilAlt size={24} />
         </button>
       </div>
     </div>
