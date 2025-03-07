@@ -93,11 +93,11 @@ const Chat = ({ socketRef, roomId, username }) => {
 
   return (
     <div className="h-full flex flex-col bg-gray-800 text-white w-96 overflow-hidden">
-      <div className="p-4 flex-shrink-0">
-        <h2 className="text-xl font-semibold text-center">Group Chat</h2>
+      <div className="p-2 flex-shrink-0">
+        <h2 className="text-xl font-semibold text-center mb-0">Group Chat</h2>
       </div>
       
-      <div className="flex-1 overflow-y-auto m-2 space-y-4 custom-scrollbar bg-gray-700 p-4 rounded-lg">
+      <div className="flex-1 overflow-y-auto m-2 space-y-4 custom-scrollbar bg-gray-700 p-2 rounded-lg">
         {messages && messages.length > 0 ? (
           messages.map((message) => (
             <div 
@@ -116,7 +116,7 @@ const Chat = ({ socketRef, roomId, username }) => {
                   {formatTimestamp(message.timestamp)}
                 </p>
               </div>
-              <p className="text-gray-100 break-words">{message.message}</p>
+              <p className="text-gray-100 break-words mb-0">{message.message}</p>
             </div>
           ))
         ) : (
@@ -125,7 +125,7 @@ const Chat = ({ socketRef, roomId, username }) => {
         <div ref={messagesEndRef} />
       </div>
 
-      <form onSubmit={handleSendMessage} className="p-4 flex-shrink-0">
+      <form onSubmit={handleSendMessage} className="p-2 flex-shrink-0">
         <div className="flex items-center gap-1 ">
           <input
             type="text"

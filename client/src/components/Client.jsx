@@ -8,7 +8,7 @@ const ClientAvatar = ({ username, isCurrentUser = false }) => {
         <div className={`flex flex-col items-center p-3 ${isCurrentUser ? 'bg-gray-700' : 'hover:bg-gray-700'} rounded-lg cursor-pointer transition-colors`}>
             <Avatar 
                 name={username} 
-                size={isCurrentUser ? 48 : 40} 
+                size= {45} 
                 round="8px" 
             />
             <span className={`text-white mt-2 text-center ${isCurrentUser ? 'font-medium' : ''}`}>
@@ -28,8 +28,8 @@ const Client = ({ clients, currentUsername, onCopyRoomId, onLeaveRoom }) => {
 
     return (
         <div className="h-full flex flex-col bg-gray-800 text-white w-96 overflow-hidden">
-            <div className="p-4 flex-shrink-0">
-                <h2 className="text-xl font-semibold text-center">Connected Users</h2>
+            <div className="p-2 flex-shrink-0">
+                <h2 className="text-xl mb-0 font-semibold text-center">Connected Users</h2>
             </div>
             
             <div className="flex-1 p-2 overflow-y-auto custom-scrollbar">
@@ -55,7 +55,7 @@ const Client = ({ clients, currentUsername, onCopyRoomId, onLeaveRoom }) => {
             </div>
 
             {/* Action Buttons */}
-            <div className="p-4 flex-shrink-0">
+            <div className="p-2 flex-shrink-0">
                 <div className="grid grid-cols-2 gap-3">
                     <button 
                         onClick={onCopyRoomId}

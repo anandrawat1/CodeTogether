@@ -58,11 +58,11 @@ const Run = ({ code, language }) => {
 
     return (
         <div className="h-full flex flex-col bg-gray-800 text-white w-96 overflow-hidden">
-            <div className="p-4 flex-shrink-0">
-                <h2 className="text-xl font-semibold text-center">Run Code</h2>
+            <div className="p-2 flex-shrink-0">
+                <h2 className="text-xl mb-0 font-semibold text-center">Run Code</h2>
             </div>
 
-            <div className="flex-1 flex flex-col p-4 overflow-y-auto custom-scrollbar">
+            <div className="flex-1 flex flex-col p-2 overflow-y-auto custom-scrollbar">
                 <div className="flex-1">
                     <label className="block text-sm font-medium mb-2">Input</label>
                     <textarea
@@ -72,6 +72,7 @@ const Run = ({ code, language }) => {
                         placeholder="Enter input here..."
                     />
                 </div>
+                
 
                 <div className="flex-1 mt-10 mb-10">
                     <label className="block text-sm font-medium mb-2">Output</label>
@@ -79,14 +80,14 @@ const Run = ({ code, language }) => {
                         {output || "Output will appear here..."}
                     </div>
                 </div>
-
-                <button
-                    className={`w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors font-medium mt-4 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+<button
+                    className={`w-full bg-blue-600 text-white py-2.5 mb-3 rounded hover:bg-blue-700 transition-colors font-medium mt-2 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                     onClick={compileAndRun}
                     disabled={isLoading}
                 >
                     {isLoading ? "Running..." : "Run Code"}
                 </button>
+                
             </div>
         </div>
     );

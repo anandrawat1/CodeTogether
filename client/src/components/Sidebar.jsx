@@ -21,7 +21,7 @@ const Sidebar = ({ onToggle }) => {
               : 'text-gray-400 hover:bg-gray-800'
           }`}
         >
-          <FaUsers size={23} />
+          <FaUsers size={22} />
         </button>
         <button
           onClick={() => handleTabChange('chat')}
