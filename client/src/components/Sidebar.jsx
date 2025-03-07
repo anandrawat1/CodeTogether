@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaComments, FaUsers, FaPencilAlt } from 'react-icons/fa';
+import { FaComments, FaUsers, FaPencilAlt, FaPlay } from 'react-icons/fa';
 
 const Sidebar = ({ onToggle }) => {
   const [activeTab, setActiveTab] = useState('clients');
@@ -21,7 +21,7 @@ const Sidebar = ({ onToggle }) => {
               : 'text-gray-400 hover:bg-gray-800'
           }`}
         >
-          <FaUsers size={24} />
+          <FaUsers size={23} />
         </button>
         <button
           onClick={() => handleTabChange('chat')}
@@ -31,7 +31,7 @@ const Sidebar = ({ onToggle }) => {
               : 'text-gray-400 hover:bg-gray-800'
           }`}
         >
-          <FaComments size={24} />
+          <FaComments size={23} />
         </button>
         <button
           onClick={() => handleTabChange('draw')}
@@ -41,7 +41,17 @@ const Sidebar = ({ onToggle }) => {
               : 'text-gray-400 hover:bg-gray-800'
           }`}
         >
-          <FaPencilAlt size={24} />
+          <FaPencilAlt size={23} />
+        </button>
+        <button
+          onClick={() => handleTabChange('run')}
+          className={`p-3 rounded-lg transition-all ${
+            activeTab === 'run'
+              ? 'bg-gray-900 text-white'
+              : 'text-gray-400 hover:bg-gray-800'
+          }`}
+        >
+          <FaPlay size={23} />
         </button>
       </div>
     </div>

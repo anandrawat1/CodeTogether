@@ -6,6 +6,7 @@ import Client from './Client';
 import Editor from './Editor';
 import Chat from './Chat';
 import Whiteboard from './Whiteboard';
+import Run from './Run';
 import { initSocket } from '../Socket';
 
 const ACTIONS = {
@@ -25,6 +26,8 @@ const EditorPage = () => {
     
     const [clients, setClients] = useState([]);
     const [sidebarContent, setSidebarContent] = useState('clients');
+    const [currentCode, setCurrentCode] = useState('');
+    const [currentLanguage, setCurrentLanguage] = useState('javascript');
     const socketRef = useRef(null);
     const codeRef = useRef("");
 
@@ -81,6 +84,15 @@ const EditorPage = () => {
         }
     };
 
+    const handleCodeChange = (code) => {
+        codeRef.current = code;
+        setCurrentCode(code);
+    };
+
+    const handleLanguageChange = (language) => {
+        setCurrentLanguage(language);
+    };
+
     if (!username) return <Navigate to="/" />;
 
     const renderMainContent = () => {
@@ -90,7 +102,12 @@ const EditorPage = () => {
                     <>
                         <Chat socketRef={socketRef} roomId={roomId} username={username} />
                         <div className="flex-1">
-                            <Editor socketRef={socketRef} roomId={roomId} onCodeChange={(code) => (codeRef.current = code)} />
+                            <Editor 
+                                socketRef={socketRef} 
+                                roomId={roomId} 
+                                onCodeChange={handleCodeChange}
+                                onLanguageChange={handleLanguageChange}
+                            />
                         </div>
                     </>
                 );
@@ -103,12 +120,31 @@ const EditorPage = () => {
                         </div>
                     </>
                 );
+            case 'run':
+                return (
+                    <>
+                        <Run code={currentCode} language={currentLanguage} />
+                        <div className="flex-1">
+                            <Editor 
+                                socketRef={socketRef} 
+                                roomId={roomId} 
+                                onCodeChange={handleCodeChange}
+                                onLanguageChange={handleLanguageChange}
+                            />
+                        </div>
+                    </>
+                );
             default:
                 return (
                     <>
                         <Client clients={clients} currentUsername={username} onCopyRoomId={copyRoomId} onLeaveRoom={() => navigate('/')} />
                         <div className="flex-1">
-                            <Editor socketRef={socketRef} roomId={roomId} onCodeChange={(code) => (codeRef.current = code)} />
+                            <Editor 
+                                socketRef={socketRef} 
+                                roomId={roomId} 
+                                onCodeChange={handleCodeChange}
+                                onLanguageChange={handleLanguageChange}
+                            />
                         </div>
                     </>
                 );
