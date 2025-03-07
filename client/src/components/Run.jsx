@@ -57,7 +57,7 @@ const Run = ({ code, language }) => {
     };
 
     return (
-        <div className="h-full flex flex-col bg-gray-800 text-white w-96 overflow-hidden">
+        <div className="h-full flex flex-col bg-[#222831] text-white w-96 overflow-hidden">
             <div className="p-2 flex-shrink-0">
                 <h2 className="text-xl mb-0 font-semibold text-center">Run Code</h2>
             </div>
@@ -68,7 +68,7 @@ const Run = ({ code, language }) => {
                     <textarea
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        className="w-full h-full bg-gray-700 text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                        className="w-full h-full bg-[#393E46] text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00acb5] resize-none"
                         placeholder="Enter input here..."
                     />
                 </div>
@@ -76,12 +76,12 @@ const Run = ({ code, language }) => {
 
                 <div className="flex-1 mt-10 mb-10">
                     <label className="block text-sm font-medium mb-2">Output</label>
-                    <div className="w-full h-full min-h-[100px] bg-gray-700 text-white rounded px-3 py-2 overflow-y-auto whitespace-pre-wrap font-mono">
+                    <div className="w-full h-full min-h-[100px] bg-[#393E46] text-white rounded px-3 py-2 overflow-y-auto whitespace-pre-wrap font-mono">
                         {output || "Output will appear here..."}
                     </div>
                 </div>
 <button
-                    className={`w-full bg-blue-600 text-white py-2.5 mb-3 rounded hover:bg-blue-700 transition-colors font-medium mt-2 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+                    className={`w-full bg-[#00acb5] text-black py-2.5 rounded hover:bg-[#00acb5ce] transition-colors font-medium mt-2 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                     onClick={compileAndRun}
                     disabled={isLoading}
                 >

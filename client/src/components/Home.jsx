@@ -44,7 +44,7 @@ const Home = () => {
                 <div className="space-y-4">
                     <input
                         type="text"
-                        className="w-full px-4 py-2 bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
+                        className="w-full px-4 py-2 bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none  placeholder-gray-400"
                         placeholder="ROOM ID"
                         onChange={(e) => setRoomId(e.target.value)}
                         value={roomId}
@@ -52,14 +52,14 @@ const Home = () => {
                     />
                     <input
                         type="text"
-                        className="w-full px-4 py-2 bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
+                        className="w-full px-4 py-2 bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none  placeholder-gray-400"
                         placeholder="USERNAME"
                         onChange={(e) => setUsername(e.target.value)}
                         value={username}
                         onKeyUp={handleInputEnter}
                     />
                     <button 
-                        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200"
+                        className="w-full bg-[#00acb5] text-black py-2 px-4 rounded-md hover:hover:bg-[#00acb5ce] transition-colors duration-200"
                         onClick={joinRoom}
                     >
                         Join
@@ -69,7 +69,7 @@ const Home = () => {
                         <a
                             onClick={createNewRoom}
                             href=""
-                            className="text-blue-400 hover:text-blue-300 transition-colors duration-200"
+                            className="text-[#00acb5] hover:text-blue-300 transition-colors duration-200"
                         >
                             new room
                         </a>
@@ -83,7 +83,7 @@ const Home = () => {
                     Built for collaborative coding. <br /> © {new Date().getFullYear()} | &nbsp;
                     <a 
                         href="https://github.com/shomik-das" 
-                        className="text-blue-400 hover:text-blue-300 transition-colors duration-200"
+                        className="text-[#00acb5] hover:text-blue-300 transition-colors duration-200"
                     >
                     shomik das
                     </a>

@@ -1,11 +1,11 @@
 import React from 'react';
 import Avatar from 'react-avatar';
-import { FaCopy } from 'react-icons/fa';
-import { IoExitOutline } from 'react-icons/io5';
+import { IoCopy } from "react-icons/io5";
+import { FaSignOutAlt } from "react-icons/fa";
 
 const ClientAvatar = ({ username, isCurrentUser = false }) => {
     return (
-        <div className={`flex flex-col items-center p-3 ${isCurrentUser ? 'bg-gray-700' : 'hover:bg-gray-700'} rounded-lg cursor-pointer transition-colors`}>
+        <div className={`flex flex-col items-center p-3 ${isCurrentUser ? 'bg-[#393E46]' : 'hover:bg-[#393E46]'} rounded-lg cursor-pointer transition-colors`}>
             <Avatar 
                 name={username} 
                 size= {45} 
@@ -27,7 +27,7 @@ const Client = ({ clients, currentUsername, onCopyRoomId, onLeaveRoom }) => {
     const otherUsers = uniqueClients.filter(client => client.username !== currentUsername);
 
     return (
-        <div className="h-full flex flex-col bg-gray-800 text-white w-96 overflow-hidden">
+        <div className="h-full flex flex-col bg-[#222831] text-white w-96 overflow-hidden">
             <div className="p-2 flex-shrink-0">
                 <h2 className="text-xl mb-0 font-semibold text-center">Connected Users</h2>
             </div>
@@ -59,16 +59,16 @@ const Client = ({ clients, currentUsername, onCopyRoomId, onLeaveRoom }) => {
                 <div className="grid grid-cols-2 gap-3">
                     <button 
                         onClick={onCopyRoomId}
-                        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors font-medium"
+                        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#EEEEEE] text-black rounded hover:bg-[#cccccc] transition-colors font-medium"
                     >
-                        <FaCopy />
+                        <IoCopy />
                         <span>Copy ID</span>
                     </button>
                     <button 
                         onClick={onLeaveRoom}
-                        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded hover:bg-red-700 transition-colors font-medium"
+                        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-red-600 text-black rounded hover:bg-red-700 transition-colors font-medium"
                     >
-                        <IoExitOutline />
+                        <FaSignOutAlt />
                         <span>Leave</span>
                     </button>
                 </div>

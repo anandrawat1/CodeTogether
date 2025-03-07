@@ -125,7 +125,7 @@ const Editor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => {
                 <select
                     value={language}
                     onChange={handleLanguageChange}
-                    className="bg-[#2d2d2d] text-white rounded py-1.5 focus:outline-none text-sm"
+                    className="bg-[#2d2d2d] text-white rounded p-2 focus:outline-none text-sm"
                 >
                     {languages.map((lang) => (
                         <option key={lang.value} value={lang.value}>

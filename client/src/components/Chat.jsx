@@ -92,24 +92,24 @@ const Chat = ({ socketRef, roomId, username }) => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-gray-800 text-white w-96 overflow-hidden">
+    <div className="h-full flex flex-col bg-[#222831] text-white w-96 overflow-hidden">
       <div className="p-2 flex-shrink-0">
         <h2 className="text-xl font-semibold text-center mb-0">Group Chat</h2>
       </div>
       
-      <div className="flex-1 overflow-y-auto m-2 space-y-4 custom-scrollbar bg-gray-700 p-2 rounded-lg">
+      <div className="flex-1 overflow-y-auto m-2 space-y-4 bg-[#393E46] p-2 rounded-lg custom-scrollbar">
         {messages && messages.length > 0 ? (
           messages.map((message) => (
             <div 
               key={message.id || message.timestamp} 
               className={`rounded-lg p-3 ${
                 message.username === username 
-                  ? 'bg-gray-800 ml-auto' 
-                  : 'bg-gray-600'
+                  ? 'bg-[#222831] ml-auto' 
+                  : 'bg-[#31353b]'
               } max-w-[85%]`}
             >
               <div className="flex justify-between items-start">
-                <p className="text-sm font-semibold text-green-500">
+                <p className="text-sm font-semibold text-[#00acb5]">
                   {message.username === username ? 'You' : message.username}
                 </p>
                 <p className="text-xs text-gray-300 ml-2">
@@ -132,14 +132,14 @@ const Chat = ({ socketRef, roomId, username }) => {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type a message..."
-            className="flex-1 min-w-0 bg-gray-700 text-white rounded px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="flex-1 min-w-0 bg-[#393E46] text-white rounded px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#00acb5]"
           />
           <button
             type="submit"
             disabled={!socketRef.current?.connected}
             className={`px-6 py-2.5 rounded transition-colors whitespace-nowrap flex-shrink-0 font-medium
               ${socketRef.current?.connected 
-                ? 'bg-green-500 hover:bg-green-600 text-white'
+                ? 'bg-[#00acb5] hover:bg-[#00acb5ce] text-black'
                 : 'bg-gray-500 cursor-not-allowed text-gray-300'}`}
           >
             {socketRef.current?.connected ? 'Send' : 'Connecting...'}
