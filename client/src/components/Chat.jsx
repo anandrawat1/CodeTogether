@@ -97,19 +97,19 @@ const Chat = ({ socketRef, roomId, username }) => {
         <h2 className="text-xl font-semibold text-center">Group Chat</h2>
       </div>
       
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+      <div className="flex-1 overflow-y-auto m-2 space-y-4 custom-scrollbar bg-gray-700 p-4 rounded-lg">
         {messages && messages.length > 0 ? (
           messages.map((message) => (
             <div 
               key={message.id || message.timestamp} 
               className={`rounded-lg p-3 ${
                 message.username === username 
-                  ? 'bg-green-600 ml-auto' 
-                  : 'bg-gray-700'
+                  ? 'bg-gray-800 ml-auto' 
+                  : 'bg-gray-600'
               } max-w-[85%]`}
             >
-              <div className="flex justify-between items-start mb-1">
-                <p className="text-sm font-semibold">
+              <div className="flex justify-between items-start">
+                <p className="text-sm font-semibold text-green-500">
                   {message.username === username ? 'You' : message.username}
                 </p>
                 <p className="text-xs text-gray-300 ml-2">
@@ -126,7 +126,7 @@ const Chat = ({ socketRef, roomId, username }) => {
       </div>
 
       <form onSubmit={handleSendMessage} className="p-4 flex-shrink-0">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 ">
           <input
             type="text"
             value={newMessage}
