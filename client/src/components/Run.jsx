@@ -59,7 +59,7 @@ const Run = ({ code, language }) => {
     return (
         <div className="h-full flex flex-col bg-[#232329] text-white w-96 overflow-hidden border-r border-[#393E46]">
             <div className="p-2 flex-shrink-0">
-                <h2 className="text-xl mb-0 font-semibold text-center">Run Code</h2>
+                <p className="text-center text-lg text-[#bbb8ff] mb-0">Run Code</p>
             </div>
 
             <div className="flex-1 flex flex-col p-2 overflow-y-auto custom-scrollbar">
@@ -80,7 +80,7 @@ const Run = ({ code, language }) => {
                         {output || "Output will appear here..."}
                     </div>
                 </div>
-<button
+                <button
                     className={`w-full bg-[#bbb8ff] text-black hover:bg-[#aaaaff] py-2.5 rounded transition-colors font-medium mt-2 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                     onClick={compileAndRun}
                     disabled={isLoading}

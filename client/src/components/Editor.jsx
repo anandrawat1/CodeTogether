@@ -167,6 +167,9 @@ const Editor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => {
                         <FiChevronDown className="h-4 w-4" />
                     </div>
                 </div>
+                <span className="text-[#bbb8ff] text-lg">
+                    Code Together
+                </span>
                 <button
                     onClick={handleDownload}
                     className="bg-[#2d2d2d] text-white rounded px-4 py-2 hover:bg-[#3d3d3d] focus:outline-none focus:ring-1 focus:ring-[#EEEEEE] focus:border-transparent transition-colors duration-200 text-sm flex items-center gap-2"
