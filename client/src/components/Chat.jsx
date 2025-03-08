@@ -92,7 +92,7 @@ const Chat = ({ socketRef, roomId, username }) => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-[#222831] text-white w-96 overflow-hidden">
+    <div className="h-full flex flex-col bg-[#232329] text-white w-96 overflow-hidden">
       <div className="p-2 flex-shrink-0">
         <h2 className="text-xl font-semibold text-center mb-0">Group Chat</h2>
       </div>
@@ -104,12 +104,12 @@ const Chat = ({ socketRef, roomId, username }) => {
               key={message.id || message.timestamp} 
               className={`rounded-lg p-3 ${
                 message.username === username 
-                  ? 'bg-[#222831] ml-auto' 
+                  ? 'bg-[#232329] ml-auto' 
                   : 'bg-[#31353b]'
               } max-w-[85%]`}
             >
               <div className="flex justify-between items-start">
-                <p className="text-sm font-semibold text-[#00acb5]">
+                <p className="text-sm font-semibold text-[#bbb8ff]">
                   {message.username === username ? 'You' : message.username}
                 </p>
                 <p className="text-xs text-gray-300 ml-2">
@@ -132,14 +132,14 @@ const Chat = ({ socketRef, roomId, username }) => {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type a message..."
-            className="flex-1 min-w-0 bg-[#393E46] text-white rounded px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#00acb5]"
+            className="flex-1 min-w-0 bg-[#393E46] text-white rounded px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#bbb8ff]"
           />
           <button
             type="submit"
             disabled={!socketRef.current?.connected}
             className={`px-6 py-2.5 rounded transition-colors whitespace-nowrap flex-shrink-0 font-medium
               ${socketRef.current?.connected 
-                ? 'bg-[#00acb5] hover:bg-[#00acb5ce] text-black'
+                ? 'bg-[#bbb8ff] text-black hover:bg-[#aaaaff]'
                 : 'bg-gray-500 cursor-not-allowed text-gray-300'}`}
           >
             {socketRef.current?.connected ? 'Send' : 'Connecting...'}

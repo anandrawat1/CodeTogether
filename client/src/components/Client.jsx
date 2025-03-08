@@ -27,7 +27,7 @@ const Client = ({ clients, currentUsername, onCopyRoomId, onLeaveRoom }) => {
     const otherUsers = uniqueClients.filter(client => client.username !== currentUsername);
 
     return (
-        <div className="h-full flex flex-col bg-[#222831] text-white w-96 overflow-hidden">
+        <div className="h-full flex flex-col bg-[#232329] text-white w-96 overflow-hidden">
             <div className="p-2 flex-shrink-0">
                 <h2 className="text-xl mb-0 font-semibold text-center">Connected Users</h2>
             </div>
@@ -59,7 +59,7 @@ const Client = ({ clients, currentUsername, onCopyRoomId, onLeaveRoom }) => {
                 <div className="grid grid-cols-2 gap-3">
                     <button 
                         onClick={onCopyRoomId}
-                        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#EEEEEE] text-black rounded hover:bg-[#cccccc] transition-colors font-medium"
+                        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#bbb8ff] text-black rounded hover:bg-[#aaaaff] transition-colors font-medium"
                     >
                         <IoCopy />
                         <span>Copy ID</span>

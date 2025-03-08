@@ -9,7 +9,8 @@ const Whiteboard = () => {
         viewModeEnabled={false}
         zenModeEnabled={false}
         gridModeEnabled={false}
-      />
+      >
+      </Excalidraw>
     </div>
   );
 };

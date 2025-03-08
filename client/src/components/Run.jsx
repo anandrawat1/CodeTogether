@@ -57,7 +57,7 @@ const Run = ({ code, language }) => {
     };
 
     return (
-        <div className="h-full flex flex-col bg-[#222831] text-white w-96 overflow-hidden">
+        <div className="h-full flex flex-col bg-[#232329] text-white w-96 overflow-hidden">
             <div className="p-2 flex-shrink-0">
                 <h2 className="text-xl mb-0 font-semibold text-center">Run Code</h2>
             </div>
@@ -68,7 +68,7 @@ const Run = ({ code, language }) => {
                     <textarea
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        className="w-full h-full bg-[#393E46] text-white rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#00acb5] resize-none"
+                        className="w-full h-full bg-[#393E46] text-white rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#bbb8ff] resize-none"
                         placeholder="Enter input here..."
                     />
                 </div>
@@ -81,7 +81,7 @@ const Run = ({ code, language }) => {
                     </div>
                 </div>
 <button
-                    className={`w-full bg-[#00acb5] text-black py-2.5 rounded hover:bg-[#00acb5ce] transition-colors font-medium mt-2 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+                    className={`w-full bg-[#bbb8ff] text-black hover:bg-[#aaaaff] py-2.5 rounded transition-colors font-medium mt-2 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                     onClick={compileAndRun}
                     disabled={isLoading}
                 >
