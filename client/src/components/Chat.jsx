@@ -92,7 +92,7 @@ const Chat = ({ socketRef, roomId, username }) => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-[#232329] text-white w-96 overflow-hidden">
+    <div className="h-full flex flex-col bg-[#232329] text-white w-96 overflow-hidden border-r border-[#393E46]">
       <div className="p-2 flex-shrink-0">
         <h2 className="text-xl font-semibold text-center mb-0">Group Chat</h2>
       </div>

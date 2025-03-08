@@ -27,7 +27,7 @@ const Client = ({ clients, currentUsername, onCopyRoomId, onLeaveRoom }) => {
     const otherUsers = uniqueClients.filter(client => client.username !== currentUsername);
 
     return (
-        <div className="h-full flex flex-col bg-[#232329] text-white w-96 overflow-hidden">
+        <div className="h-full flex flex-col bg-[#232329] text-white w-96 overflow-hidden border-r border-[#393E46]">
             <div className="p-2 flex-shrink-0">
                 <h2 className="text-xl mb-0 font-semibold text-center">Connected Users</h2>
             </div>
