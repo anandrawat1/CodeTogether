@@ -132,7 +132,7 @@ const Chat = ({ socketRef, roomId, username }) => {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type a message..."
-            className="flex-1 min-w-0 bg-[#393E46] text-white rounded px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#00acb5]"
+            className="flex-1 min-w-0 bg-[#393E46] text-white rounded px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#00acb5]"
           />
           <button
             type="submit"
