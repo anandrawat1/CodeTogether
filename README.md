@@ -37,17 +37,15 @@ The **Real-Time Collaborative Code Editor** is an online platform that enables m
    git clone https://github.com/shomik-das/CodeTogether.git
    cd CodeTogether
    ```
-2. Install dependencies:
+2. Run the frontend:
    ```sh
+   cd client
    npm install
-   ```
-3. Start the development server:
-   ```sh
    npm run dev
    ```
 4. Run the backend:
    ```sh
-   cd server
+   cd ../server
    npm install
    npm run dev
    ```
