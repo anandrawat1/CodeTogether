@@ -29,7 +29,7 @@ const Client = ({ clients, currentUsername, onCopyRoomId, onLeaveRoom }) => {
     return (
         <div className="h-full flex flex-col bg-[#232329] text-white w-96 overflow-hidden border-r border-[#393E46]">
             <div className="p-2 flex-shrink-0">
-                <p className="text-center text-lg text-[#bbb8ff] mb-0">Connected Users</p>
+                <p className=" text-lg text-[#bbb8ff] mb-0">Connected Users</p>
             </div>
             
             <div className="flex-1 p-2 overflow-y-auto custom-scrollbar">

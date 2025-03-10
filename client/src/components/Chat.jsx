@@ -94,7 +94,7 @@ const Chat = ({ socketRef, roomId, username }) => {
   return (
     <div className="h-full flex flex-col bg-[#232329] text-white w-96 overflow-hidden border-r border-[#393E46]">
       <div className="p-2 flex-shrink-0">
-        <p className="text-center text-lg text-[#bbb8ff] mb-0">Group Chat</p>
+        <p className="text-lg text-[#bbb8ff] mb-0">Group Chat</p>
       </div>
       
       <div className="flex-1 overflow-y-auto m-2 space-y-4 bg-[#393E46] p-2 rounded-lg custom-scrollbar">
