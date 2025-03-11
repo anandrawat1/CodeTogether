@@ -26,6 +26,7 @@ const Editor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => {
     const [code, setCode] = useState('');
     
     const languages = [
+        { value: 'html', label: 'HTML' },
         { value: 'javascript', label: 'JavaScript' },
         { value: 'python', label: 'Python' },
         { value: 'java', label: 'Java' },
@@ -34,6 +35,8 @@ const Editor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => {
 
     const getModeForLanguage = (lang) => {
         switch (lang) {
+            case 'html':
+                return { name: 'xml', htmlMode: true };
             case 'javascript':
                 return { name: 'javascript', json: true };
             case 'python':
