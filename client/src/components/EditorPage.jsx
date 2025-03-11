@@ -7,7 +7,6 @@ import Editor from './Editor';
 import Chat from './Chat';
 import Whiteboard from './Whiteboard';
 import Run from './Run';
-import Terminal from './Terminal';
 import Preview from './Preview';
 import { initSocket } from '../Socket';
 
@@ -126,20 +125,6 @@ const EditorPage = () => {
                 return (
                     <>
                         <Run code={currentCode} language={currentLanguage} />
-                        <div className="flex-1">
-                            <Editor 
-                                socketRef={socketRef} 
-                                roomId={roomId} 
-                                onCodeChange={handleCodeChange}
-                                onLanguageChange={handleLanguageChange}
-                            />
-                        </div>
-                    </>
-                );
-            case 'terminal':
-                return (
-                    <>
-                        <Terminal />
                         <div className="flex-1">
                             <Editor 
                                 socketRef={socketRef} 

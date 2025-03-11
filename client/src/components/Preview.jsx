@@ -9,10 +9,9 @@ const Preview = ({ code, language }) => {
     useEffect(() => {
         if (language === 'html') {
             setHtml(code);
-        } else if (language === 'javascript') {
+        }
+        else if (language === 'javascript') {
             // For JavaScript, wrap it in HTML
-            console.log(code);
-            console.log(language);
             setHtml(`
                 <!DOCTYPE html>
                 <html>
@@ -24,6 +23,20 @@ const Preview = ({ code, language }) => {
                     <script>
                         ${code}
                     </script>
+                </body>
+                </html>
+            `);
+        }
+        else{
+            setHtml(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Preview</title>
+                    
+                </head>
+                <body>
+                    <p>Invalid language selected</p>
                 </body>
                 </html>
             `);
