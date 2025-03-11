@@ -7,14 +7,12 @@ const roomUsers = {};
 const roomMessages = {};
 
 function getAllConnectedClients(io, roomId) {
-    const uniqueUsers = new Map();
-    Array.from(io.sockets.adapter.rooms.get(roomId) || []).forEach((socketId) => {
-        const username = userSocketMap[socketId];
-        if (username) {
-            uniqueUsers.set(username, { socketId, username });
-        }
-    });
-    return Array.from(uniqueUsers.values());
+    const room = io.sockets.adapter.rooms.get(roomId);
+    if (!room) return [];
+    return Array.from(room).map((socketId) => ({
+        socketId,
+        username: userSocketMap[socketId],
+    }));
 }
 
 function initializeSocket(server) {
@@ -60,12 +58,15 @@ function initializeSocket(server) {
             socket.to(roomId).emit(ACTIONS.CODE_CHANGE, { code });
         });
 
-        socket.on(ACTIONS.SYNC_CODE, ({ socketId, roomId, code }) => {
-            if (code !== undefined) {
-                roomCodeMap[roomId] = code;
-            }
+        socket.on(ACTIONS.SYNC_CODE, ({ socketId, roomId }) => {
             if (roomCodeMap[roomId]) {
                 io.to(socketId).emit(ACTIONS.CODE_CHANGE, { code: roomCodeMap[roomId] });
+            }
+        });
+
+        socket.on(ACTIONS.REQUEST_CODE, ({ roomId }) => {
+            if (roomCodeMap[roomId]) {
+                socket.emit(ACTIONS.CODE_CHANGE, { code: roomCodeMap[roomId] });
             }
         });
 
@@ -92,26 +93,47 @@ function initializeSocket(server) {
 
         socket.on("disconnecting", () => {
             const rooms = Array.from(socket.rooms);
+            const username = userSocketMap[socket.id];
+            
             rooms.forEach((roomId) => {
                 if (roomId !== socket.id) {
-                    const username = userSocketMap[socket.id];
-                    const hasOtherConnections = Array.from(io.sockets.adapter.rooms.get(roomId) || [])
-                        .some((sid) => sid !== socket.id && userSocketMap[sid] === username);
+                    io.to(roomId).emit(ACTIONS.DISCONNECTED, {
+                        socketId: socket.id,
+                        username: username
+                    });
 
-                    if (!hasOtherConnections) {
-                        socket.to(roomId).emit(ACTIONS.DISCONNECTED, { socketId: socket.id, username });
-                        if (roomUsers[roomId]) {
-                            roomUsers[roomId].delete(username);
-                            if (roomUsers[roomId].size === 0) {
-                                delete roomUsers[roomId];
-                                delete roomCodeMap[roomId];
-                                delete roomMessages[roomId];
-                            }
+                    if (roomUsers[roomId]) {
+                        roomUsers[roomId].delete(username);
+                        
+                        if (roomUsers[roomId].size === 0) {
+                            delete roomUsers[roomId];
+                            delete roomCodeMap[roomId];
+                            delete roomMessages[roomId];
                         }
                     }
                 }
             });
+
             delete userSocketMap[socket.id];
+        });
+
+        socket.on(ACTIONS.LEAVE, ({ roomId }) => {
+            const username = userSocketMap[socket.id];
+            socket.leave(roomId);
+            
+            io.to(roomId).emit(ACTIONS.DISCONNECTED, {
+                socketId: socket.id,
+                username: username
+            });
+
+            if (roomUsers[roomId]) {
+                roomUsers[roomId].delete(username);
+                if (roomUsers[roomId].size === 0) {
+                    delete roomUsers[roomId];
+                    delete roomCodeMap[roomId];
+                    delete roomMessages[roomId];
+                }
+            }
         });
     });
 

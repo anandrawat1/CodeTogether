@@ -14,6 +14,7 @@ const ACTIONS = {
     JOINED: "joined",
     DISCONNECTED: "disconnected",
     SYNC_CODE: "sync-code",
+    REQUEST_CODE: "request-code",
 };
 
 const EditorPage = () => {
@@ -32,48 +33,59 @@ const EditorPage = () => {
     const codeRef = useRef("");
 
     useEffect(() => {
-            try {
-                socketRef.current = initSocket();
+        try {
+            socketRef.current = initSocket();
 
-                socketRef.current.on('connect_error', handleError);
-                socketRef.current.on('connect_failed', handleError);
+            socketRef.current.on('connect_error', handleError);
+            socketRef.current.on('connect_failed', handleError);
 
-                function handleError(err) {
-                    console.error('Socket connection error:', err);
-                    toast.error('Socket connection failed.');
-                    navigate('/');
-                }
-
-                socketRef.current.emit(ACTIONS.JOIN, { roomId, username });
-
-                socketRef.current.on(ACTIONS.JOINED, ({ clients, socketId }) => {
-                    setClients(clients);
-                    if (socketId !== socketRef.current.id) {
-                        socketRef.current.emit(ACTIONS.SYNC_CODE, {
-                            code: codeRef.current,
-                            socketId,
-                        });
-                    }
-                });
-
-                socketRef.current.on(ACTIONS.DISCONNECTED, ({ socketId, username }) => {
-                    toast.success(`${username} left the room.`);
-                    setClients((prev) => prev.filter(client => client.socketId !== socketId));
-                });
-
-            } catch (err) {
-                console.error('Socket initialization error:', err);
-                toast.error('Could not connect to the server.');
+            function handleError(err) {
+                console.error('Socket connection error:', err);
+                toast.error('Socket connection failed.');
                 navigate('/');
             }
-        return () => {
-            if (socketRef.current) {
-                socketRef.current.off(ACTIONS.JOINED);
-                socketRef.current.off(ACTIONS.DISCONNECTED);
-                socketRef.current.off(ACTIONS.SYNC_CODE);
-            }
-        };
+
+            socketRef.current.emit(ACTIONS.JOIN, { roomId, username });
+
+            socketRef.current.on(ACTIONS.JOINED, ({ clients, username, socketId }) => {
+                if (socketId !== socketRef.current.id) {
+                    toast.success(`${username} joined the room.`);
+                    socketRef.current.emit(ACTIONS.SYNC_CODE, {
+                        code: codeRef.current,
+                        socketId,
+                    });
+                }
+                setClients(clients);
+            });
+
+            socketRef.current.on(ACTIONS.DISCONNECTED, ({ socketId, username }) => {
+                toast.success(`${username} left the room.`);
+                setClients((prev) => {
+                    return prev.filter(client => client.socketId !== socketId);
+                });
+            });
+
+            return () => {
+                if (socketRef.current) {
+                    socketRef.current.disconnect();
+                    socketRef.current.off(ACTIONS.JOINED);
+                    socketRef.current.off(ACTIONS.DISCONNECTED);
+                    socketRef.current.off(ACTIONS.SYNC_CODE);
+                }
+            };
+        } catch (err) {
+            console.error('Socket initialization error:', err);
+            toast.error('Could not connect to the server.');
+            navigate('/');
+        }
     }, [roomId, username, navigate]);
+
+    // Add effect to handle sidebar content changes
+    useEffect(() => {
+        if (sidebarContent === 'clients' || sidebarContent === 'chat' || sidebarContent === 'run') {
+            socketRef.current?.emit(ACTIONS.REQUEST_CODE, { roomId });
+        }
+    }, [sidebarContent, roomId]);
 
     const copyRoomId = async () => {
         try {
