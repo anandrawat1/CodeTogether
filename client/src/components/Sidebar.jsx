@@ -3,7 +3,6 @@ import { FaUsers } from 'react-icons/fa';
 import { IoMdChatbubbles  } from "react-icons/io";
 import { MdDraw } from "react-icons/md";
 import { FaPlay } from "react-icons/fa6";
-import { IoTerminal } from "react-icons/io5";
 import { FaEye } from "react-icons/fa";
 
 const Sidebar = ({ onToggle }) => {
@@ -56,16 +55,6 @@ const Sidebar = ({ onToggle }) => {
           }`}
         >
           <FaPlay size={24} />
-        </button>
-        <button
-          onClick={() => handleTabChange('terminal')}
-          className={`p-3 rounded-lg transition-all ${
-            activeTab === 'terminal'
-              ? 'bg-[#393E46] text-white'
-              : 'text-gray-400'
-          }`}
-        >
-          <IoTerminal size={24} />
         </button>
         <button
           onClick={() => handleTabChange('preview')}
