@@ -3,7 +3,7 @@ import { FaUsers } from 'react-icons/fa';
 import { IoMdChatbubbles  } from "react-icons/io";
 import { MdDraw } from "react-icons/md";
 import { FaPlay } from "react-icons/fa6";
-
+import { MdPreview } from "react-icons/md";
 
 const Sidebar = ({ onToggle }) => {
   const [activeTab, setActiveTab] = useState('clients');
@@ -14,10 +14,9 @@ const Sidebar = ({ onToggle }) => {
   };
 
   return (
-    
     <div className="h-screen w-16 bg-[#232329] text-white flex flex-col items-center py-4 border-r border-gray-700 shadow-lg">
       <div className="flex flex-col space-y-8">
-      <button
+        <button
           onClick={() => handleTabChange('clients')}
           className={`p-3 rounded-lg transition-all ${
             activeTab === 'clients'
@@ -42,10 +41,10 @@ const Sidebar = ({ onToggle }) => {
           className={`p-3 rounded-lg transition-all ${
             activeTab === 'draw'
               ? 'bg-[#393E46] text-white'
-              : 'text-gray-400 '
+              : 'text-gray-400'
           }`}
         >
-          <MdDraw  size={24} />
+          <MdDraw size={24} />
         </button>
         <button
           onClick={() => handleTabChange('run')}
@@ -56,6 +55,16 @@ const Sidebar = ({ onToggle }) => {
           }`}
         >
           <FaPlay size={24} />
+        </button>
+        <button
+          onClick={() => handleTabChange('preview')}
+          className={`p-3 rounded-lg transition-all ${
+            activeTab === 'preview'
+              ? 'bg-[#393E46] text-white'
+              : 'text-gray-400'
+          }`}
+        >
+          <MdPreview size={24} />
         </button>
       </div>
     </div>

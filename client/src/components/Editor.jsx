@@ -29,7 +29,8 @@ const Editor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => {
         { value: 'javascript', label: 'JavaScript' },
         { value: 'python', label: 'Python' },
         { value: 'java', label: 'Java' },
-        { value: 'cpp', label: 'C++' }
+        { value: 'cpp', label: 'C++' },
+        { value: 'html', label: 'HTML' }
     ];
 
     const getModeForLanguage = (lang) => {
@@ -41,6 +42,8 @@ const Editor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => {
             case 'java':
             case 'cpp':
                 return { name: 'text/x-c++src' };
+            case 'html':
+                return { name: 'xml' };
             default:
                 return { name: 'javascript', json: true };
         }
@@ -52,6 +55,7 @@ const Editor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => {
             'python': '.py',
             'java': '.java',
             'cpp': '.cpp',
+            'html': '.html'
         };
         return extensions[lang] || '.txt';
     };
@@ -71,61 +75,70 @@ const Editor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => {
     };
 
     useEffect(() => {
-        if (!socketRef.current) return;
-
-        async function init() {
-            editorRef.current = Codemirror.fromTextArea(
-                document.getElementById('realtimeEditor'),
-                {
-                    mode: getModeForLanguage(language),
-                    theme: 'material',
-                    autoCloseTags: true,
-                    autoCloseBrackets: true,
-                    lineNumbers: true,
-                    lineWrapping: false,
-                    scrollbarStyle: 'native',
-                    tabSize: 4,
-                    indentUnit: 4,
-                }
-            );
-
-            // Set editor size to fill container
-            editorRef.current.setSize('100%', '100%');
-
-            // Listen for code changes from other users
-            socketRef.current.on(ACTIONS.CODE_CHANGE, ({ code }) => {
-                if (code !== null && editorRef.current && code !== editorRef.current.getValue()) {
-                    editorRef.current.setValue(code);
-                    setCode(code);
-                }
-            });
-
-            // Handle code changes
-            editorRef.current.on('change', (instance, changes) => {
-                const { origin } = changes;
-                const code = instance.getValue();
-                setCode(code);
-                onCodeChange(code);
-                if (origin !== 'setValue') {
-                    socketRef.current.emit(ACTIONS.CODE_CHANGE, {
-                        roomId,
-                        code,
-                    });
-                }
-            });
-
-            // Request initial code sync
-            socketRef.current.emit(ACTIONS.SYNC_CODE, {
-                socketId: socketRef.current.id,
-                roomId,
-                code: editorRef.current.getValue()
-            });
+        const savedCode = localStorage.getItem(`code-${roomId}`);
+        if (savedCode) {
+            setCode(savedCode);
         }
-        
-        init();
+    }, [socketRef.current]);
 
+    useEffect(() => {
+        // Save code to local storage whenever it changes
+        localStorage.setItem(`code-${roomId}`, code);
+    }, [code, roomId]);
+
+    useEffect(() => {
+        if (!socketRef.current) return;
+    
+        editorRef.current = Codemirror.fromTextArea(
+            document.getElementById('realtimeEditor'),
+            {
+                mode: getModeForLanguage(language),
+                theme: 'material',
+                autoCloseTags: true,
+                autoCloseBrackets: true,
+                lineNumbers: true,
+                lineWrapping: false,
+                scrollbarStyle: 'native',
+                tabSize: 4,
+                indentUnit: 4,
+            }
+        );
+    
+        editorRef.current.setSize('100%', '100%');
+    
+        const savedCode = localStorage.getItem(`code-${roomId}`);
+        if (savedCode) {
+            editorRef.current.setValue(savedCode);
+            setCode(savedCode);
+        }
+    
+        socketRef.current.on(ACTIONS.CODE_CHANGE, ({ code }) => {
+            if (code !== null && editorRef.current && code !== editorRef.current.getValue()) {
+                editorRef.current.setValue(code);
+                setCode(code);
+            }
+        });
+    
+        editorRef.current.on('change', (instance, changes) => {
+            const { origin } = changes;
+            const code = instance.getValue();
+            setCode(code);
+            onCodeChange(code);
+            if (origin !== 'setValue') {
+                socketRef.current.emit(ACTIONS.CODE_CHANGE, {
+                    roomId,
+                    code,
+                });
+            }
+        });
+    
+        socketRef.current.emit(ACTIONS.SYNC_CODE, {
+            socketId: socketRef.current.id,
+            roomId,
+            code: editorRef.current.getValue()
+        });
+    
         return () => {
-            // Cleanup
             socketRef.current?.off(ACTIONS.CODE_CHANGE);
             if (editorRef.current) {
                 editorRef.current.toTextArea();
@@ -133,6 +146,7 @@ const Editor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => {
             }
         };
     }, [socketRef.current, roomId, language]);
+    
 
     const handleLanguageChange = (e) => {
         const newLang = e.target.value;

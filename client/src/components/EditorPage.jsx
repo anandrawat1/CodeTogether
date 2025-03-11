@@ -7,6 +7,7 @@ import Editor from './Editor';
 import Chat from './Chat';
 import Whiteboard from './Whiteboard';
 import Run from './Run';
+import Preview from './Preview';
 import { initSocket } from '../Socket';
 
 const ACTIONS = {
@@ -82,7 +83,7 @@ const EditorPage = () => {
 
     // Add effect to handle sidebar content changes
     useEffect(() => {
-        if (sidebarContent === 'clients' || sidebarContent === 'chat' || sidebarContent === 'run') {
+        if (sidebarContent === 'clients' || sidebarContent === 'chat' || sidebarContent === 'run' || sidebarContent === 'preview') {
             socketRef.current?.emit(ACTIONS.REQUEST_CODE, { roomId });
         }
     }, [sidebarContent, roomId]);
@@ -136,6 +137,20 @@ const EditorPage = () => {
                 return (
                     <>
                         <Run code={currentCode} language={currentLanguage} />
+                        <div className="flex-1">
+                            <Editor 
+                                socketRef={socketRef} 
+                                roomId={roomId} 
+                                onCodeChange={handleCodeChange}
+                                onLanguageChange={handleLanguageChange}
+                            />
+                        </div>
+                    </>
+                );
+            case 'preview':
+                return (
+                    <>
+                        <Preview code={currentCode} language={currentLanguage} />
                         <div className="flex-1">
                             <Editor 
                                 socketRef={socketRef} 
