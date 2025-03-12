@@ -43,7 +43,8 @@ const Run = ({ code, language }) => {
             let attempts = 0, result;
             while (attempts < 10) {
                 await new Promise((r) => setTimeout(r, 2000));
-                result = await fetch(`${API_URL}/submissions/${token}`, { headers }).then((r) => r.json());
+                const response = await fetch(`${API_URL}/submissions/${token}`, { headers });
+                result = await response.json();
                 if (result.status?.id > 2) break;
                 attempts++;
             }
@@ -57,7 +58,7 @@ const Run = ({ code, language }) => {
     };
 
     return (
-        <div className="h-full flex flex-col bg-[#232329] text-white w-96 overflow-hidden border-r border-[#393E46]">
+        <div className="h-full flex flex-col bg-[#232329] text-white overflow-hidden border-r border-[#393E46]">
             <div className="p-2 flex-shrink-0">
                 <p className=" text-lg text-[#bbb8ff] mb-0">Run Code</p>
             </div>

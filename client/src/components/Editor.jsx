@@ -10,15 +10,7 @@ import 'codemirror/mode/clike/clike';
 import 'codemirror/addon/edit/closetag';
 import 'codemirror/addon/edit/closebrackets';
 import { FiDownload, FiChevronDown } from 'react-icons/fi';
-
-const ACTIONS = {
-  JOIN: "join",
-  JOINED: "joined",
-  DISCONNECTED: "disconnected",
-  CODE_CHANGE: "code-change",
-  SYNC_CODE: "sync-code",
-  LEAVE: "leave",
-};
+import ACTIONS from '../Actions';
 
 const Editor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => {
     const editorRef = useRef(null);

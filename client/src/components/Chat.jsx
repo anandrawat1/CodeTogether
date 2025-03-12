@@ -1,17 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-
-const ACTIONS = {
-  JOIN: "join",
-  JOINED: "joined",
-  DISCONNECTED: "disconnected",
-  CODE_CHANGE: "code-change",
-  SYNC_CODE: "sync-code",
-  LEAVE: "leave",
-  SEND_MESSAGE: "send-message",
-  RECEIVE_MESSAGE: "receive-message",
-  FETCH_MESSAGES: "fetch-messages",
-  GET_MESSAGES: "get-messages",
-};
+import ACTIONS from '../Actions';
 
 const Chat = ({ socketRef, roomId, username }) => {
   const [messages, setMessages] = useState([]);
@@ -92,7 +80,7 @@ const Chat = ({ socketRef, roomId, username }) => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-[#232329] text-white w-96 overflow-hidden border-r border-[#393E46]">
+    <div className="h-full flex flex-col bg-[#232329] text-white overflow-hidden border-r border-[#393E46]">
       <div className="p-2 flex-shrink-0">
         <p className="text-lg text-[#bbb8ff] mb-0">Group Chat</p>
       </div>
@@ -126,7 +114,7 @@ const Chat = ({ socketRef, roomId, username }) => {
       </div>
 
       <form onSubmit={handleSendMessage} className="p-2 flex-shrink-0">
-        <div className="flex items-center gap-1 ">
+        <div className="flex items-center gap-1">
           <input
             type="text"
             value={newMessage}

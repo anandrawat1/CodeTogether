@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams, useLocation, Navigate } from 'react-router-dom';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import Sidebar from './Sidebar';
 import Client from './Client';
 import Editor from './Editor';
@@ -9,14 +10,7 @@ import Whiteboard from './Whiteboard';
 import Run from './Run';
 import Preview from './Preview';
 import { initSocket } from '../Socket';
-
-const ACTIONS = {
-    JOIN: "join",
-    JOINED: "joined",
-    DISCONNECTED: "disconnected",
-    SYNC_CODE: "sync-code",
-    REQUEST_CODE: "request-code",
-};
+import ACTIONS from '../Actions';
 
 const EditorPage = () => {
     const { roomId } = useParams();
@@ -109,71 +103,53 @@ const EditorPage = () => {
     if (!username) return <Navigate to="/" />;
 
     const renderMainContent = () => {
+        const renderEditorWithPanel = (SideComponent) => (
+            <PanelGroup direction="horizontal" className="flex-1">
+                <Panel
+                    defaultSize={30} 
+                    minSize={SideComponent.type === Whiteboard || SideComponent.type === Preview ? 40 : 30} 
+                    maxSize={SideComponent.type === Whiteboard || SideComponent.type === Preview ? 65 : 50}>
+                    {SideComponent}
+                </Panel>
+                <PanelResizeHandle className="w-1 bg-[#393E46] hover:bg-[#bbb8ff] transition-colors duration-200 cursor-col-resize" />
+                <Panel defaultSize={70}>
+                    <Editor 
+                        socketRef={socketRef} 
+                        roomId={roomId} 
+                        onCodeChange={handleCodeChange}
+                        onLanguageChange={handleLanguageChange}
+                    />
+                </Panel>
+            </PanelGroup>
+        );
+
         switch (sidebarContent) {
             case 'chat':
-                return (
-                    <>
-                        <Chat socketRef={socketRef} roomId={roomId} username={username} />
-                        <div className="flex-1">
-                            <Editor 
-                                socketRef={socketRef} 
-                                roomId={roomId} 
-                                onCodeChange={handleCodeChange}
-                                onLanguageChange={handleLanguageChange}
-                            />
-                        </div>
-                    </>
+                return renderEditorWithPanel(
+                    <Chat socketRef={socketRef} roomId={roomId} username={username} />
                 );
             case 'draw':
-                return (
-                    <>
-                        <Client clients={clients} currentUsername={username} onCopyRoomId={copyRoomId} onLeaveRoom={() => navigate('/')} />
-                        <div className="flex-1">
-                            <Whiteboard />
-                        </div>
-                    </>
+                // return (
+                //     <>
+                //         <Client clients={clients} currentUsername={username} onCopyRoomId={copyRoomId} onLeaveRoom={() => navigate('/')} />
+                //         <div className="flex-1">
+                //             <Whiteboard />
+                //         </div>
+                //     </>
+                return renderEditorWithPanel(
+                    <Whiteboard />
                 );
             case 'run':
-                return (
-                    <>
-                        <Run code={currentCode} language={currentLanguage} />
-                        <div className="flex-1">
-                            <Editor 
-                                socketRef={socketRef} 
-                                roomId={roomId} 
-                                onCodeChange={handleCodeChange}
-                                onLanguageChange={handleLanguageChange}
-                            />
-                        </div>
-                    </>
+                return renderEditorWithPanel(
+                    <Run code={currentCode} language={currentLanguage} />
                 );
             case 'preview':
-                return (
-                    <>
-                        <Preview code={currentCode} language={currentLanguage} />
-                        <div className="flex-1">
-                            <Editor 
-                                socketRef={socketRef} 
-                                roomId={roomId} 
-                                onCodeChange={handleCodeChange}
-                                onLanguageChange={handleLanguageChange}
-                            />
-                        </div>
-                    </>
+                return renderEditorWithPanel(
+                    <Preview code={currentCode} language={currentLanguage} />
                 );
             default:
-                return (
-                    <>
-                        <Client clients={clients} currentUsername={username} onCopyRoomId={copyRoomId} onLeaveRoom={() => navigate('/')} />
-                        <div className="flex-1">
-                            <Editor 
-                                socketRef={socketRef} 
-                                roomId={roomId} 
-                                onCodeChange={handleCodeChange}
-                                onLanguageChange={handleLanguageChange}
-                            />
-                        </div>
-                    </>
+                return renderEditorWithPanel(
+                    <Client clients={clients} currentUsername={username} onCopyRoomId={copyRoomId} onLeaveRoom={() => navigate('/')} />
                 );
         }
     };
