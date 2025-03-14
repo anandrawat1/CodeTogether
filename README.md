@@ -19,6 +19,7 @@ The **Real-Time Collaborative Code Editor** is an online platform that enables m
 - **Code Compilation & Execution** – Supports live execution of code.
 - **Real-Time Group Calls** – Allows audio/video calls for discussion.
 - **Collaborative Drawing** – A shared whiteboard for brainstorming.
+- **Preview Feature** – Users can preview their code output in real-time.
 - **Download Code File** – Users can download their code file easily.
 
 ## Tech Stack
