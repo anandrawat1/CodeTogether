@@ -33,7 +33,7 @@ The **Real-Time Collaborative Code Editor** is an online platform that enables m
 
 
 ## Sequence Diagram
-![Screenshot 5](Photos/6.png)
+![Screenshot 5](Photos/8.png)
 
 
 ## Installation & Setup
