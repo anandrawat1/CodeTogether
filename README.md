@@ -31,6 +31,11 @@ The **Real-Time Collaborative Code Editor** is an online platform that enables m
 - **Code Editor:** CodeMirror
 - **Whiteboard:** Excalidraw
 
+
+## Sequence Diagram
+![Screenshot 5](Photos/6.png)
+
+
 ## Installation & Setup
 
 1. Clone the repository:
