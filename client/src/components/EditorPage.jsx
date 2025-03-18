@@ -12,6 +12,7 @@ import Preview from './Preview';
 import { initSocket } from '../Socket';
 import ACTIONS from '../Actions';
 
+
 const EditorPage = () => {
     const { roomId } = useParams();
     const location = useLocation();
@@ -111,7 +112,8 @@ const EditorPage = () => {
                     maxSize={SideComponent.type === Whiteboard || SideComponent.type === Preview ? 65 : 50}>
                     {SideComponent}
                 </Panel>
-                <PanelResizeHandle className="w-1 bg-[#393E46] hover:bg-[#bbb8ff] transition-colors duration-200 cursor-col-resize" />
+                <PanelResizeHandle className="w-1 bg-[#393E46] hover:bg-[#bbb8ff] transition-colors duration-200 cursor-col-resize">
+                </PanelResizeHandle>
                 <Panel defaultSize={70}>
                     <Editor 
                         socketRef={socketRef} 
