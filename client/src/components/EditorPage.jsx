@@ -9,6 +9,7 @@ import Chat from './Chat';
 import Whiteboard from './Whiteboard';
 import Run from './Run';
 import Preview from './Preview';
+import VideoCall from './VideoCall';
 import { initSocket } from '../Socket';
 import ACTIONS from '../Actions';
 
@@ -31,7 +32,7 @@ const EditorPage = () => {
     useEffect(() => {
         try {
             socketRef.current = initSocket();
-
+            
             socketRef.current.on('connect_error', handleError);
             socketRef.current.on('connect_failed', handleError);
 
@@ -78,7 +79,7 @@ const EditorPage = () => {
 
     // Add effect to handle sidebar content changes
     useEffect(() => {
-        if (sidebarContent === 'clients' || sidebarContent === 'chat' || sidebarContent === 'run' || sidebarContent === 'preview') {
+        if (sidebarContent === 'clients' || sidebarContent === 'chat' || sidebarContent === 'run' || sidebarContent === 'preview' || sidebarContent === 'video') {
             socketRef.current?.emit(ACTIONS.REQUEST_CODE, { roomId });
         }
     }, [sidebarContent, roomId]);
@@ -131,13 +132,6 @@ const EditorPage = () => {
                     <Chat socketRef={socketRef} roomId={roomId} username={username} />
                 );
             case 'draw':
-                // return (
-                //     <>
-                //         <Client clients={clients} currentUsername={username} onCopyRoomId={copyRoomId} onLeaveRoom={() => navigate('/')} />
-                //         <div className="flex-1">
-                //             <Whiteboard />
-                //         </div>
-                //     </>
                 return renderEditorWithPanel(
                     <Whiteboard />
                 );
@@ -148,6 +142,10 @@ const EditorPage = () => {
             case 'preview':
                 return renderEditorWithPanel(
                     <Preview code={currentCode} language={currentLanguage} />
+                );
+            case 'video':
+                return renderEditorWithPanel(
+                    <VideoCall roomId={roomId} username={username} />
                 );
             default:
                 return renderEditorWithPanel(

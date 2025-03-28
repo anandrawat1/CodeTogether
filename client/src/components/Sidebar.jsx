@@ -4,6 +4,7 @@ import { IoMdChatbubbles  } from "react-icons/io";
 import { MdDraw } from "react-icons/md";
 import { FaPlay } from "react-icons/fa6";
 import { MdRemoveRedEye } from "react-icons/md";
+import { FaVideo } from "react-icons/fa";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 
@@ -80,6 +81,18 @@ const Sidebar = ({ onToggle }) => {
             }`}
           >
             <MdRemoveRedEye size={24} />
+          </button>
+        </Tippy>
+        <Tippy content="Video Call" placement="right">
+          <button
+            onClick={() => handleTabChange('video')}
+            className={`p-3 rounded-lg transition-all ${
+              activeTab === 'video'
+                ? 'bg-[#393E46] text-white'
+                : 'text-gray-400'
+            }`}
+          >
+            <FaVideo size={24} />
           </button>
         </Tippy>
       </div>

@@ -6,6 +6,12 @@ const roomCodeMap = {};
 const roomUsers = {};
 const roomMessages = {};
 
+// roomUsers = { 'Room1': new Set(['User2']) };
+// roomCodeMap = { 'Room1': 'console.log("Hello World");' };
+// roomMessages = { 'Room1': [{ id: 1, message: 'Hi', username: 'User2' }] };
+// userSocketMap = { 'socket_2': 'User2' };
+// Room1: [socket_1, socket_2] inbuilt 
+
 function getAllConnectedClients(io, roomId) {
     const room = io.sockets.adapter.rooms.get(roomId);
     if (!room) return [];
@@ -21,8 +27,7 @@ function initializeSocket(server) {
     });
 
     io.on("connection", (socket) => {
-        console.log("Socket connected:", socket.id);
-
+        //console.log("Socket connected:", socket.id);
         socket.on(ACTIONS.JOIN, ({ roomId, username }) => {
             console.log("User joined:", { roomId, username, socketId: socket.id });
             const existingSockets = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
@@ -92,7 +97,7 @@ function initializeSocket(server) {
         });
 
         socket.on("disconnecting", () => {
-            const rooms = Array.from(socket.rooms);
+            const rooms = Array.from(socket.rooms); //socket.rooms is a Set containing all rooms the socket is currently part of.
             const username = userSocketMap[socket.id];
             
             rooms.forEach((roomId) => {
@@ -104,7 +109,7 @@ function initializeSocket(server) {
 
                     if (roomUsers[roomId]) {
                         roomUsers[roomId].delete(username);
-                        
+                        //const remainingSockets = io.sockets.adapter.rooms.get(roomId); for getting the size of the room
                         if (roomUsers[roomId].size === 0) {
                             delete roomUsers[roomId];
                             delete roomCodeMap[roomId];
@@ -119,7 +124,7 @@ function initializeSocket(server) {
 
         socket.on(ACTIONS.LEAVE, ({ roomId }) => {
             const username = userSocketMap[socket.id];
-            socket.leave(roomId);
+            socket.leave(roomId);  //Room1: [socket_1, socket_2]
             
             io.to(roomId).emit(ACTIONS.DISCONNECTED, {
                 socketId: socket.id,
