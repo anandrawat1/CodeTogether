@@ -44,6 +44,13 @@ const EditorPage = () => {
 
             socketRef.current.emit(ACTIONS.JOIN, { roomId, username });
 
+            // Listen for new messages at EditorPage level
+            socketRef.current.on(ACTIONS.RECEIVE_MESSAGE, ({ username: senderUsername, message }) => {
+                if (senderUsername !== username) {
+                    toast.success('Got new message!');
+                }
+            });
+
             socketRef.current.on(ACTIONS.JOINED, ({ clients, username, socketId }) => {
                 if (socketId !== socketRef.current.id) {
                     toast.success(`${username} joined the room.`);
@@ -68,6 +75,7 @@ const EditorPage = () => {
                     socketRef.current.off(ACTIONS.JOINED);
                     socketRef.current.off(ACTIONS.DISCONNECTED);
                     socketRef.current.off(ACTIONS.SYNC_CODE);
+                    socketRef.current.off(ACTIONS.RECEIVE_MESSAGE);
                 }
             };
         } catch (err) {
@@ -100,6 +108,13 @@ const EditorPage = () => {
 
     const handleLanguageChange = (language) => {
         setCurrentLanguage(language);
+    };
+
+    const handleLeaveRoom = () => {
+        if (socketRef.current) {
+            socketRef.current.emit(ACTIONS.LEAVE, { roomId });
+        }
+        navigate('/');
     };
 
     if (!username) return <Navigate to="/" />;
@@ -149,7 +164,7 @@ const EditorPage = () => {
                 );
             default:
                 return renderEditorWithPanel(
-                    <Client clients={clients} currentUsername={username} onCopyRoomId={copyRoomId} onLeaveRoom={() => navigate('/')} />
+                    <Client clients={clients} currentUsername={username} onCopyRoomId={copyRoomId} onLeaveRoom={handleLeaveRoom} />
                 );
         }
     };

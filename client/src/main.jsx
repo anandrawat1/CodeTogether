@@ -12,13 +12,20 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <>
         <div>
             <Toaster
-                position="top-right"
+                position="bottom-right"
                 toastOptions={{
-                    success: {
-                        theme: {
-                            primary: '#4aed88',
-                        },
+                    duration: 3000,
+                    style: {
+                        background: '#232329',
+                        color: '#fff',
+                        border: '1px solid #bbb8ff'
                     },
+                    success: {
+                        iconTheme: {
+                            primary: '#bbb8ff',
+                            secondary: '#232329'
+                        }
+                    }
                 }}
             />
         </div>
