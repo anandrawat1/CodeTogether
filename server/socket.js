@@ -1,10 +1,12 @@
 const { Server } = require("socket.io");
 const ACTIONS = require("./Actions");
+const roomController = require('./controllers/roomController');
+const messageController = require('./controllers/messageController');
 
-const userSocketMap = {};
-const roomCodeMap = {};
-const roomUsers = {};
-const roomMessages = {};
+const userSocketMap = {}; //it doesn’t directly tell us which users are in a specific room.
+// const roomCodeMap = {};
+// const roomUsers = {};
+// const roomMessages = {};
 
 // roomUsers = { 'Room1': new Set(['User2']) };
 // roomCodeMap = { 'Room1': 'console.log("Hello World");' };
@@ -12,14 +14,23 @@ const roomMessages = {};
 // userSocketMap = { 'socket_2': 'User2' };
 // Room1: [socket_1, socket_2] inbuilt 
 
-function getAllConnectedClients(io, roomId) {
+function getAllConnectedClients(io, roomId) { //We need it to make sure we're only updating the users inside that specific room, not all connected users.
     const room = io.sockets.adapter.rooms.get(roomId);
+    // io.sockets.adapter.rooms = {
+    //     'Room1': new Set(['socket_1', 'socket_2']),
+    //     'Room2': new Set(['socket_3', 'socket_4'])
+    // }
     if (!room) return [];
     return Array.from(room).map((socketId) => ({
         socketId,
         username: userSocketMap[socketId],
     }));
 }
+// [
+//     { socketId: 'socket_1', username: 'User1' },
+//     { socketId: 'socket_2', username: 'User2' }
+// ]
+
 
 function initializeSocket(server) {
     const io = new Server(server, {
@@ -27,9 +38,10 @@ function initializeSocket(server) {
     });
 
     io.on("connection", (socket) => {
-        //console.log("Socket connected:", socket.id);
-        socket.on(ACTIONS.JOIN, ({ roomId, username }) => {
+        socket.on(ACTIONS.JOIN, async ({ roomId, username }) => {
             console.log("User joined:", { roomId, username, socketId: socket.id });
+            
+            // Handle existing socket with same username
             const existingSockets = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
             existingSockets.forEach((existingSocketId) => {
                 if (userSocketMap[existingSocketId] === username) {
@@ -43,102 +55,100 @@ function initializeSocket(server) {
 
             userSocketMap[socket.id] = username;
             socket.join(roomId);
-            if (!roomUsers[roomId]) roomUsers[roomId] = new Set();
-            roomUsers[roomId].add(username);
 
+            // Create or update room in database
+            const room = await roomController.getRoom(roomId);
+            if (!room) {
+                await roomController.createRoom(roomId);
+            }
             const clients = getAllConnectedClients(io, roomId);
+            await roomController.updateUsers(roomId, clients.map(client => client.username));  //roomController.updateUsers("Room1", ["User1", "User2"]);
+
             io.to(roomId).emit(ACTIONS.JOINED, { clients, username, socketId: socket.id });
 
-            if (roomCodeMap[roomId]) {
-                socket.emit(ACTIONS.CODE_CHANGE, { code: roomCodeMap[roomId] });
+            // Send existing code if available
+            if (room && room.code) {
+                socket.emit(ACTIONS.CODE_CHANGE, { code: room.code });
             }
 
-            if (!roomMessages[roomId]) {
-                roomMessages[roomId] = [];
-            }
+            // Send existing messages
+            const messages = await messageController.getRoomMessages(roomId);
+            socket.emit(ACTIONS.FETCH_MESSAGES, { messages: messages.reverse() });
         });
 
-        socket.on(ACTIONS.CODE_CHANGE, ({ roomId, code }) => {
-            roomCodeMap[roomId] = code;
+        socket.on(ACTIONS.CODE_CHANGE, async ({ roomId, code }) => {
+            await roomController.updateCode(roomId, code);
             socket.to(roomId).emit(ACTIONS.CODE_CHANGE, { code });
         });
 
-        socket.on(ACTIONS.SYNC_CODE, ({ socketId, roomId }) => {
-            if (roomCodeMap[roomId]) {
-                io.to(socketId).emit(ACTIONS.CODE_CHANGE, { code: roomCodeMap[roomId] });
+        socket.on(ACTIONS.SYNC_CODE, async ({ socketId, roomId }) => {
+            const room = await roomController.getRoom(roomId);
+            if (room && room.code) {
+                io.to(socketId).emit(ACTIONS.CODE_CHANGE, { code: room.code });
             }
         });
 
-        socket.on(ACTIONS.REQUEST_CODE, ({ roomId }) => {
-            if (roomCodeMap[roomId]) {
-                socket.emit(ACTIONS.CODE_CHANGE, { code: roomCodeMap[roomId] });
+        socket.on(ACTIONS.REQUEST_CODE, async ({ roomId }) => {
+            const room = await roomController.getRoom(roomId);
+            if (room && room.code) {
+                socket.emit(ACTIONS.CODE_CHANGE, { code: room.code });
             }
         });
 
-        socket.on(ACTIONS.SEND_MESSAGE, ({ roomId, message, username }) => {
+        socket.on(ACTIONS.SEND_MESSAGE, async ({ roomId, message, username }) => {
             console.log("Server received message:", { roomId, message, username });
-            const messageData = { id: Date.now(), username, message, timestamp: new Date().toISOString() };
-
-            if (!roomMessages[roomId]) roomMessages[roomId] = [];
-            roomMessages[roomId].push(messageData);
-            if (roomMessages[roomId].length > 100) {
-                roomMessages[roomId] = roomMessages[roomId].slice(-100);
-            }
-
-            console.log("Broadcasting message to room:", roomId);
-            io.to(roomId).emit(ACTIONS.RECEIVE_MESSAGE, messageData);
+            const savedMessage = await messageController.saveMessage(roomId, username, message);
+            io.to(roomId).emit(ACTIONS.RECEIVE_MESSAGE, {
+                id: savedMessage._id,
+                username,
+                message,
+                timestamp: savedMessage.timestamp
+            });
         });
 
-        socket.on(ACTIONS.FETCH_MESSAGES, ({ roomId }) => {
+        socket.on(ACTIONS.FETCH_MESSAGES, async ({ roomId }) => {
             console.log("Fetching messages for room:", roomId);
-            const messages = roomMessages[roomId] || [];
-            console.log("Found messages:", messages);
-            socket.emit(ACTIONS.FETCH_MESSAGES, { messages });
+            const messages = await messageController.getRoomMessages(roomId);
+            socket.emit(ACTIONS.FETCH_MESSAGES, { messages: messages.reverse() });
         });
 
-        socket.on("disconnecting", () => {
-            const rooms = Array.from(socket.rooms); //socket.rooms is a Set containing all rooms the socket is currently part of.
+        socket.on("disconnecting", async () => {
+            const rooms = Array.from(socket.rooms);
             const username = userSocketMap[socket.id];
             
-            rooms.forEach((roomId) => {
+            for (const roomId of rooms) {
                 if (roomId !== socket.id) {
                     io.to(roomId).emit(ACTIONS.DISCONNECTED, {
                         socketId: socket.id,
                         username: username
                     });
 
-                    if (roomUsers[roomId]) {
-                        roomUsers[roomId].delete(username);
-                        //const remainingSockets = io.sockets.adapter.rooms.get(roomId); for getting the size of the room
-                        if (roomUsers[roomId].size === 0) {
-                            delete roomUsers[roomId];
-                            delete roomCodeMap[roomId];
-                            delete roomMessages[roomId];
-                        }
+                    const clients = getAllConnectedClients(io, roomId);
+                    if (clients.length > 0) {
+                        await roomController.updateUsers(roomId, clients.map(client => client.username));
                     }
                 }
-            });
+            }
 
             delete userSocketMap[socket.id];
         });
 
-        socket.on(ACTIONS.LEAVE, ({ roomId }) => {
+        socket.on(ACTIONS.LEAVE, async ({ roomId }) => {
             const username = userSocketMap[socket.id];
-            socket.leave(roomId);  //Room1: [socket_1, socket_2]
+            socket.leave(roomId);
             
             io.to(roomId).emit(ACTIONS.DISCONNECTED, {
                 socketId: socket.id,
                 username: username
             });
 
-            if (roomUsers[roomId]) {
-                roomUsers[roomId].delete(username);
-                if (roomUsers[roomId].size === 0) {
-                    delete roomUsers[roomId];
-                    delete roomCodeMap[roomId];
-                    delete roomMessages[roomId];
-                }
+            const clients = getAllConnectedClients(io, roomId);
+            if (clients.length > 0) {
+                const update =  await roomController.updateUsers(roomId, clients.map(client => client.username));
+                console.log("Updated users in room:", update);
             }
+            
+            delete userSocketMap[socket.id];
         });
     });
 

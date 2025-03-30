@@ -1,19 +1,21 @@
-const express = require("express");
+require('dotenv').config();
+const express = require('express');
+const http = require('http');
+const cors = require('cors');
+const { initializeSocket } = require('./socket');
+const connectDB = require('./config/db');
+
 const app = express();
-const http = require("http");
-const cors = require("cors");
-const server = http.createServer(app);
-const { initializeSocket } = require("./socket");
-require("dotenv").config();
-
-// Enable CORS
 app.use(cors());
-
-// Parse JSON bodies
 app.use(express.json());
 
-// Initialize socket.io
-initializeSocket(server);
+const server = http.createServer(app);
+const io = initializeSocket(server);
+
+// Connect to MongoDB
+connectDB();
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});

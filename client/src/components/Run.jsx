@@ -59,9 +59,9 @@ const Run = ({ code, language }) => {
 
     return (
         <div className="h-full flex flex-col bg-[#232329] text-white overflow-hidden">
-            <div className="p-2 flex-shrink-0">
+            {/* <div className="p-2 flex-shrink-0">
                 <p className=" text-lg text-[#bbb8ff] mb-0">Run Code</p>
-            </div>
+            </div> */}
 
             <div className="flex-1 flex flex-col p-2 overflow-y-auto custom-scrollbar">
                 <div className="flex-1">

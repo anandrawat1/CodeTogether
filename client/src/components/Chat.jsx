@@ -81,9 +81,9 @@ const Chat = ({ socketRef, roomId, username }) => {
 
   return (
     <div className="h-full flex flex-col bg-[#232329] text-white overflow-hidden">
-      <div className="p-2 flex-shrink-0">
+      {/* <div className="p-2 flex-shrink-0">
         <p className="text-lg text-[#bbb8ff] mb-0">Group Chat</p>
-      </div>
+      </div> */}
       
       <div className="flex-1 overflow-y-auto m-2 space-y-4 bg-[#393E46] p-2 rounded-lg custom-scrollbar">
         {messages && messages.length > 0 ? (

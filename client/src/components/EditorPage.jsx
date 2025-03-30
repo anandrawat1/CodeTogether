@@ -53,7 +53,7 @@ const EditorPage = () => {
 
             socketRef.current.on(ACTIONS.JOINED, ({ clients, username, socketId }) => {
                 if (socketId !== socketRef.current.id) {
-                    toast.success(`${username} joined the room.`);
+                    toast.success(`${username} joined the room!`);
                     socketRef.current.emit(ACTIONS.SYNC_CODE, {
                         code: codeRef.current,
                         socketId,
@@ -63,7 +63,7 @@ const EditorPage = () => {
             });
 
             socketRef.current.on(ACTIONS.DISCONNECTED, ({ socketId, username }) => {
-                toast.success(`${username} left the room.`);
+                toast.success(`${username} left the room!`);
                 setClients((prev) => {
                     return prev.filter(client => client.socketId !== socketId);
                 });
