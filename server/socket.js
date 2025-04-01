@@ -3,7 +3,7 @@ const ACTIONS = require("./Actions");
 const roomController = require('./controllers/roomController');
 const messageController = require('./controllers/messageController');
 
-const userSocketMap = {}; //it doesn’t directly tell us which users are in a specific room.
+const userSocketMap = {}; //it doesn’t directly tell us which users are in a specific room.d
 // const roomCodeMap = {};
 // const roomUsers = {};
 // const roomMessages = {};
