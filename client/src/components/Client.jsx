@@ -27,10 +27,10 @@ const Client = ({ clients, currentUsername, onCopyRoomId, onLeaveRoom }) => {
     const otherUsers = uniqueClients.filter(client => client.username !== currentUsername);
 
     return (
-        <div className="h-full flex flex-col bg-[#232329] text-white w-96 overflow-hidden border-r border-[#393E46]">
-            <div className="p-2 flex-shrink-0">
+        <div className="h-full flex flex-col bg-[#232329] text-white overflow-hidden">
+            {/* <div className="p-2 flex-shrink-0">
                 <p className=" text-lg text-[#bbb8ff] mb-0">Connected Users</p>
-            </div>
+            </div> */}
             
             <div className="flex-1 p-2 overflow-y-auto custom-scrollbar">
                 {/* Current User Section */}
@@ -44,7 +44,7 @@ const Client = ({ clients, currentUsername, onCopyRoomId, onLeaveRoom }) => {
                 )}
 
                 {/* Other Users Grid */}
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     {otherUsers.map((client) => (
                         <ClientAvatar 
                             key={client.socketId} 

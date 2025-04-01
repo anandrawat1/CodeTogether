@@ -11,6 +11,7 @@ const ACTIONS = {
   RECEIVE_MESSAGE: "receive-message",
   FETCH_MESSAGES: "fetch-messages",
   MESSAGES_RECEIVED: "messages-received",
+  REQUEST_CODE: "request-code",
 };
 
 module.exports = ACTIONS;

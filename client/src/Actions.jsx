@@ -8,6 +8,7 @@ const ACTIONS = {
     SEND_MESSAGE: "send-message",
     RECEIVE_MESSAGE: "receive-message",
     FETCH_MESSAGES: "fetch-messages",
+    REQUEST_CODE: "request-code",
 };
 
 export default ACTIONS; 
