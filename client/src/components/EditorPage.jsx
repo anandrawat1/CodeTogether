@@ -9,10 +9,7 @@ import Chat from './Chat';
 import Whiteboard from './Whiteboard';
 import Run from './Run';
 import Preview from './Preview';
-<<<<<<< HEAD
-=======
 import VideoCall from './VideoCall';
->>>>>>> backup/backup-restore
 import { initSocket } from '../Socket';
 import ACTIONS from '../Actions';
 
@@ -164,20 +161,6 @@ const EditorPage = () => {
             case 'video':
                 return renderEditorWithPanel(
                     <VideoCall roomId={roomId} username={username} />
-                );
-            case 'preview':
-                return (
-                    <>
-                        <Preview code={currentCode} language={currentLanguage} />
-                        <div className="flex-1">
-                            <Editor 
-                                socketRef={socketRef} 
-                                roomId={roomId} 
-                                onCodeChange={handleCodeChange}
-                                onLanguageChange={handleLanguageChange}
-                            />
-                        </div>
-                    </>
                 );
             default:
                 return renderEditorWithPanel(
