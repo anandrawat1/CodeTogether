@@ -22,8 +22,7 @@ const Editor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => {
         { value: 'javascript', label: 'JavaScript' },
         { value: 'python', label: 'Python' },
         { value: 'java', label: 'Java' },
-        { value: 'cpp', label: 'C++' },
-        { value: 'html', label: 'HTML' }
+        { value: 'cpp', label: 'C++' }
     ];
 
     const getModeForLanguage = (lang) => {
@@ -37,8 +36,6 @@ const Editor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => {
             case 'java':
             case 'cpp':
                 return { name: 'text/x-c++src' };
-            case 'html':
-                return { name: 'xml' };
             default:
                 return { name: 'javascript', json: true };
         }

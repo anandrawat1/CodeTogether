@@ -3,7 +3,9 @@ const ACTIONS = require("./Actions");
 const roomController = require('./controllers/roomController');
 const messageController = require('./controllers/messageController');
 
-const userSocketMap = {}; //it doesn’t directly tell us which users are in a specific room.d
+// Maps socket IDs to usernames
+const userSocketMap = {};
+
 // const roomCodeMap = {};
 // const roomUsers = {};
 // const roomMessages = {};
@@ -56,13 +58,10 @@ function initializeSocket(server) {
             userSocketMap[socket.id] = username;
             socket.join(roomId);
 
-            // Create or update room in database
+            // Get room and update users
             const room = await roomController.getRoom(roomId);
-            if (!room) {
-                await roomController.createRoom(roomId);
-            }
             const clients = getAllConnectedClients(io, roomId);
-            await roomController.updateUsers(roomId, clients.map(client => client.username));  //roomController.updateUsers("Room1", ["User1", "User2"]);
+            await roomController.updateUsers(roomId, clients.map(client => client.username));
 
             io.to(roomId).emit(ACTIONS.JOINED, { clients, username, socketId: socket.id });
 
@@ -144,7 +143,7 @@ function initializeSocket(server) {
 
             const clients = getAllConnectedClients(io, roomId);
             if (clients.length > 0) {
-                const update =  await roomController.updateUsers(roomId, clients.map(client => client.username));
+                const update = await roomController.updateUsers(roomId, clients.map(client => client.username));
                 console.log("Updated users in room:", update);
             }
             

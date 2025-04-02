@@ -1,11 +1,14 @@
 const Room = require('../models/Room');
 
 const roomController = {
-    createRoom: async (roomId) => {
+    createRoom: async (roomId, roomName = '') => {
         try {
             let room = await Room.findOne({ roomId });
             if (!room) {
-                room = await Room.create({ roomId });
+                room = await Room.create({ 
+                    roomId,
+                    roomName,
+                });
             }
             return room;
         } catch (error) {
@@ -34,7 +37,7 @@ const roomController = {
                 { users },
                 { new: true, upsert: true }
                 //{ new: true } → Returns the updated document after the change.
-                //{ upsert: true } → If the room doesn’t exist, create a new one.
+                //{ upsert: true } → If the room doesn't exist, create a new one.
             );
             
         } catch (error) {
@@ -49,6 +52,31 @@ const roomController = {
         } catch (error) {
             console.error('Error getting room:', error);
             throw error;
+        }
+    },
+
+    handleCreateRoom: async (req, res) => {
+        try {
+            const { roomId, roomName } = req.body;
+            const room = await roomController.createRoom(roomId, roomName);
+            res.status(200).json({ success: true, room });
+        } catch (error) {
+            console.error('Error creating room:', error);
+            res.status(500).json({ success: false, message: 'Failed to create room' });
+        }
+    },
+
+    handleGetRoom: async (req, res) => {
+        try {
+            const { roomId } = req.params;
+            const room = await roomController.getRoom(roomId);
+            if (!room) {
+                return res.status(404).json({ success: false, message: 'Room not found' });
+            }
+            res.json({ success: true, room });
+        } catch (error) {
+            console.error('Error getting room:', error);
+            res.status(500).json({ success: false, message: 'Failed to get room' });
         }
     }
 };
