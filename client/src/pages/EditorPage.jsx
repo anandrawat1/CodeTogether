@@ -92,15 +92,6 @@ const EditorPage = () => {
         }
     }, [sidebarContent, roomId]);
 
-    const copyRoomId = async () => {
-        try {
-            await navigator.clipboard.writeText(roomId);
-            toast.success('Room ID copied.');
-        } catch {
-            toast.error('Could not copy Room ID.');
-        }
-    };
-
     const handleCodeChange = (code) => {
         codeRef.current = code;
         setCurrentCode(code);
@@ -108,13 +99,6 @@ const EditorPage = () => {
 
     const handleLanguageChange = (language) => {
         setCurrentLanguage(language);
-    };
-
-    const handleLeaveRoom = () => {
-        if (socketRef.current) {
-            socketRef.current.emit(ACTIONS.LEAVE, { roomId });
-        }
-        navigate('/');
     };
 
     if (!username) return <Navigate to="/" />;
@@ -164,7 +148,12 @@ const EditorPage = () => {
                 );
             default:
                 return renderEditorWithPanel(
-                    <Client clients={clients} currentUsername={username} onCopyRoomId={copyRoomId} onLeaveRoom={handleLeaveRoom} />
+                    <Client 
+                        clients={clients} 
+                        currentUsername={username} 
+                        roomId={roomId}
+                        socketRef={socketRef}
+                    />
                 );
         }
     };

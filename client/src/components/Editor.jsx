@@ -187,7 +187,7 @@ const Editor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => {
             <div className="flex-1 h-[calc(100vh-6rem)] relative">
                 <div className="absolute inset-0">
                     <textarea id="realtimeEditor"></textarea>
-                    <style jsx global>{`
+                    <style>{`
                         .CodeMirror {
                             position: absolute;
                             top: 0;

@@ -2,6 +2,9 @@ import React from 'react';
 import Avatar from 'react-avatar';
 import { IoCopy } from "react-icons/io5";
 import { FaSignOutAlt } from "react-icons/fa";
+import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import ACTIONS from '../Actions';
 
 const ClientAvatar = ({ username, isCurrentUser = false }) => {
     
@@ -19,7 +22,25 @@ const ClientAvatar = ({ username, isCurrentUser = false }) => {
     );
 };
 
-const Client = ({ clients, currentUsername, onCopyRoomId, onLeaveRoom }) => {
+const Client = ({ clients, currentUsername, roomId, socketRef }) => {
+    const navigate = useNavigate();
+
+    const copyRoomId = async () => {
+        try {
+            await navigator.clipboard.writeText(roomId);
+            toast.success('Room ID copied.');
+        } catch {
+            toast.error('Could not copy Room ID.');
+        }
+    };
+
+    const handleLeaveRoom = () => {
+        if (socketRef.current) {
+            socketRef.current.emit(ACTIONS.LEAVE, { roomId });
+        }
+        navigate('/');
+    };
+
     // Filter unique users based on username
     const uniqueClients = Array.from(new Map(clients.map(client => [client.username, client])).values());
     
@@ -59,14 +80,14 @@ const Client = ({ clients, currentUsername, onCopyRoomId, onLeaveRoom }) => {
             <div className="p-2 flex-shrink-0">
                 <div className="grid grid-cols-2 gap-3">
                     <button 
-                        onClick={onCopyRoomId}
+                        onClick={copyRoomId}
                         className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#bbb8ff] text-black rounded hover:bg-[#aaaaff] transition-colors font-medium"
                     >
                         <IoCopy />
                         <span>Copy ID</span>
                     </button>
                     <button 
-                        onClick={onLeaveRoom}
+                        onClick={handleLeaveRoom}
                         className="flex items-center justify-center gap-2 px-4 py-2.5 bg-red-600 text-black rounded hover:bg-red-700 transition-colors font-medium"
                     >
                         <FaSignOutAlt />
