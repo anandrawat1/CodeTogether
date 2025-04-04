@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Room from './components/Room';
-import EditorPage from './components/EditorPage';
+import Room from './pages/Room';
+import EditorPage from './pages/EditorPage';
 import './App.css';
 
 const App = () => {

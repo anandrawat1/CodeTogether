@@ -16,27 +16,31 @@ const JoinRoom = () => {
 
         try {
             setIsLoading(true);
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/rooms/${roomId}`);
             
-            if (!response.ok) {
-                if (response.status === 404) {
-                    throw new Error('Room not found');
-                }
-                throw new Error('Failed to join room');
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/rooms/join`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ roomId, username })
+            })
+            
+            const data = await response.json();
+            setIsLoading(false);
+            
+            if (!data.success) {
+                toast.error(data.message || 'Failed to join room');
+                return;
             }
 
-            const data = await response.json();
-            if (data.success) {
-                toast.success('Joined Room Successfully!');
-                navigate(`/editor/${roomId}`, {
-                    state: {
-                        username,
-                    },
-                });
-            }
+            toast.success('Joined Room Successfully!');
+            navigate(`/editor/${roomId}`, {
+                state: {
+                    username,
+                },
+            });
         } catch (error) {
             console.error('Error joining room:', error);
-            toast.error(error.message || 'Failed to join room');
             setIsLoading(false);
         }
     };

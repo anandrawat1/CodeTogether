@@ -43,18 +43,6 @@ function initializeSocket(server) {
         socket.on(ACTIONS.JOIN, async ({ roomId, username }) => {
             console.log("User joined:", { roomId, username, socketId: socket.id });
             
-            // Handle existing socket with same username
-            const existingSockets = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
-            existingSockets.forEach((existingSocketId) => {
-                if (userSocketMap[existingSocketId] === username) {
-                    const existingSocket = io.sockets.sockets.get(existingSocketId);
-                    if (existingSocket && existingSocket.id !== socket.id) {
-                        existingSocket.leave(roomId);
-                        delete userSocketMap[existingSocketId];
-                    }
-                }
-            });
-
             userSocketMap[socket.id] = username;
             socket.join(roomId);
 
@@ -144,7 +132,6 @@ function initializeSocket(server) {
             const clients = getAllConnectedClients(io, roomId);
             if (clients.length > 0) {
                 const update = await roomController.updateUsers(roomId, clients.map(client => client.username));
-                console.log("Updated users in room:", update);
             }
             
             delete userSocketMap[socket.id];
@@ -154,4 +141,4 @@ function initializeSocket(server) {
     return io;
 }
 
-module.exports = { initializeSocket };
+module.exports = initializeSocket;

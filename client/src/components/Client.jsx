@@ -4,6 +4,7 @@ import { IoCopy } from "react-icons/io5";
 import { FaSignOutAlt } from "react-icons/fa";
 
 const ClientAvatar = ({ username, isCurrentUser = false }) => {
+    
     return (
         <div className={`flex flex-col items-center p-3 ${isCurrentUser ? 'bg-[#393E46]' : 'hover:bg-[#393E46]'} rounded-lg cursor-pointer transition-colors`}>
             <Avatar 

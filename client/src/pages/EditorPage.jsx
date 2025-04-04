@@ -2,15 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams, useLocation, Navigate } from 'react-router-dom';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
-import Sidebar from './Sidebar';
-import Client from './Client';
-import Editor from './Editor';
-import Chat from './Chat';
-import Whiteboard from './Whiteboard';
-import Run from './Run';
-import Preview from './Preview';
-import VideoCall from './VideoCall';
-import { initSocket } from '../Socket';
+import Sidebar from '../components/Sidebar';
+import Client from '../components/Client';
+import Editor from '../components/Editor';
+import Chat from '../components/Chat';
+import Whiteboard from '../components/Whiteboard';
+import Run from '../components/Run';
+import Preview from '../components/Preview';
+import VideoCall from '../components/VideoCall';
+import { initSocket } from '../initSocket';
 import ACTIONS from '../Actions';
 
 

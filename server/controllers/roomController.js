@@ -66,19 +66,29 @@ const roomController = {
         }
     },
 
-    handleGetRoom: async (req, res) => {
+    handleJoinRoom: async (req, res) => {
         try {
-            const { roomId } = req.params;
-            const room = await roomController.getRoom(roomId);
-            if (!room) {
-                return res.status(404).json({ success: false, message: 'Room not found' });
+            const { roomId, username } = req.body;
+
+    
+            if (!roomId || !username) {
+                return res.status(400).json({ success: false, message: 'Room ID and username are required' });
             }
-            res.json({ success: true, room });
+
+            const room = await Room.findOne({ roomId });
+            if (!room) {
+                return res.json({ success: false, message: 'Room not found' });
+            }
+    
+            if (room.users.includes(username)) {
+                return res.json({ success: false, message: 'Username already taken' });
+            }
+            res.status(200).json({ success: true, room });
         } catch (error) {
-            console.error('Error getting room:', error);
-            res.status(500).json({ success: false, message: 'Failed to get room' });
+            console.error('Error joining room:', error);
+            res.status(500).json({ success: false, message: 'Server error' });
         }
-    }
+    }    
 };
 
 module.exports = roomController; 

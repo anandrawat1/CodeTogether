@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import CreateRoom from './CreateRoom';
-import JoinRoom from './JoinRoom';
+import CreateRoom from '../components/room/CreateRoom';
+import JoinRoom from '../components/room/JoinRoom';
 
 const Room = () => {
     const [view, setView] = useState('join');

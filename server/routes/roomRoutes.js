@@ -4,8 +4,7 @@ const roomController = require('../controllers/roomController');
 
 // Create a new room
 router.post('/create', roomController.handleCreateRoom);
-
-// Get room details
-router.get('/:roomId', roomController.handleGetRoom);
+// Join a room
+router.post('/join', roomController.handleJoinRoom);
 
 module.exports = router; 
