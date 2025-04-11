@@ -4,6 +4,7 @@ import { IoCopy } from "react-icons/io5";
 import { FaSignOutAlt } from "react-icons/fa";
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import ACTIONS from '../Actions';
 
 const ClientAvatar = ({ username, isCurrentUser = false }) => {
@@ -35,10 +36,28 @@ const Client = ({ clients, currentUsername, roomId, socketRef }) => {
     };
 
     const handleLeaveRoom = () => {
-        if (socketRef.current) {
-            socketRef.current.emit(ACTIONS.LEAVE, { roomId });
-        }
-        navigate('/');
+        Swal.fire({
+            text: 'Are you sure you want to leave this room?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#bbb8ff',
+            confirmButtonText: 'Yes, leave',
+            background: '#232329',
+            color: '#ffffff',
+            customClass: {
+                popup: 'rounded-lg',
+                confirmButton: 'font-medium text-black',
+                cancelButton: 'font-medium text-black'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                if (socketRef.current) {
+                    socketRef.current.emit(ACTIONS.LEAVE, { roomId });
+                }
+                navigate('/');
+            }
+        });
     };
 
     // Filter unique users based on username
@@ -88,7 +107,7 @@ const Client = ({ clients, currentUsername, roomId, socketRef }) => {
                     </button>
                     <button 
                         onClick={handleLeaveRoom}
-                        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-red-600 text-black rounded hover:bg-red-700 transition-colors font-medium"
+                        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-red-500 text-black rounded hover:bg-red-600 transition-colors font-medium"
                     >
                         <FaSignOutAlt />
                         <span>Leave</span>
