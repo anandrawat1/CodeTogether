@@ -50,21 +50,21 @@ const CreateRoom = () => {
 
     return (
         <div>
-            <h1 className="text-3xl font-bold text-[#bbb8ff] text-center mb-8">
+            {/* <h1 className="text-3xl font-bold text-[#bbb8ff] text-center mb-8">
                 Create New Room
-            </h1>
+            </h1> */}
             <div className="space-y-4">
                 <input 
                     type="text"
                     placeholder="Room Name"
                     onChange={(e) => setRoomName(e.target.value)}
                     value={roomName}
-                    className="w-full px-4 py-2 bg-[#232329] text-white rounded-md focus:outline-none placeholder-gray-400"
+                    className="w-full px-4 py-2 bg-[#2A2A30] text-white rounded-md focus:outline-none placeholder-gray-400"
                     onKeyUp={handleInputEnter}
                 />
                 <input
                     type="text"
-                    className="w-full px-4 py-2 bg-[#232329] text-white rounded-md focus:outline-none placeholder-gray-400"
+                    className="w-full px-4 py-2 bg-[#2A2A30] text-white rounded-md focus:outline-none placeholder-gray-400"
                     placeholder="Username"
                     onChange={(e) => setUsername(e.target.value)}
                     value={username}

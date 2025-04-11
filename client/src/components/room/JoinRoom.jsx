@@ -48,13 +48,13 @@ const JoinRoom = () => {
 
     return (
         <div>
-            <h1 className="text-3xl font-bold text-[#bbb8ff] text-center mb-8">
+            {/* <h1 className="text-3xl font-bold text-[#bbb8ff] text-center mb-8">
                 Join Room
-            </h1>
+            </h1> */}
             <div className="space-y-4">
                 <input
                     type="text"
-                    className="w-full px-4 py-2 bg-[#232329] text-white rounded-md focus:outline-none placeholder-gray-400"
+                    className="w-full px-4 py-2 bg-[#2A2A30] text-white rounded-md focus:outline-none placeholder-gray-400"
                     placeholder="Room ID"
                     onChange={(e) => setRoomId(e.target.value)}
                     value={roomId}
@@ -62,7 +62,7 @@ const JoinRoom = () => {
                 />
                 <input
                     type="text"
-                    className="w-full px-4 py-2 bg-[#232329] text-white rounded-md focus:outline-none placeholder-gray-400"
+                    className="w-full px-4 py-2 bg-[#2A2A30] text-white rounded-md focus:outline-none placeholder-gray-400"
                     placeholder="Username"
                     onChange={(e) => setUsername(e.target.value)}
                     value={username}
