@@ -48,13 +48,17 @@ function initializeSocket(server) {
 
             // Get room and update users
             const room = await roomController.getRoom(roomId);
+            if(!room) {
+                console.error(`Room not found: ${roomId}`);
+                return;
+            }
             const clients = getAllConnectedClients(io, roomId);
             await roomController.updateUsers(roomId, clients.map(client => client.username));
 
             io.to(roomId).emit(ACTIONS.JOINED, { clients, username, socketId: socket.id });
 
             // Send existing code if available
-            if (room && room.code) {
+            if (room.code) {
                 socket.emit(ACTIONS.CODE_CHANGE, { code: room.code });
             }
 

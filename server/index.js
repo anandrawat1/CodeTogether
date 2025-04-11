@@ -5,6 +5,7 @@ const cors = require('cors');
 const initializeSocket = require('./socket');
 const connectDB = require('./config/db');
 const roomRoutes = require('./routes/roomRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 app.use(cors());
@@ -18,6 +19,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/rooms', roomRoutes);
+app.use('/api/users', userRoutes);
 
 const server = http.createServer(app);
 const io = initializeSocket(server);

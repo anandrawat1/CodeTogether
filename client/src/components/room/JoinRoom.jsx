@@ -9,11 +9,6 @@ const JoinRoom = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const joinRoom = async () => {
-        if (!roomId || !username) {
-            toast.error('Room ID & Username required');
-            return;
-        }
-
         try {
             setIsLoading(true);
             

@@ -1,22 +1,7 @@
 const Room = require('../models/Room');
+const User = require('../models/User');
 
 const roomController = {
-    createRoom: async (roomId, roomName = '') => {
-        try {
-            let room = await Room.findOne({ roomId });
-            if (!room) {
-                room = await Room.create({ 
-                    roomId,
-                    roomName,
-                });
-            }
-            return room;
-        } catch (error) {
-            console.error('Error creating room:', error);
-            throw error;
-        }
-    },
-
     updateCode: async (roomId, code) => {
         try {
             return await Room.findOneAndUpdate(
@@ -57,12 +42,39 @@ const roomController = {
 
     handleCreateRoom: async (req, res) => {
         try {
-            const { roomId, roomName } = req.body;
-            const room = await roomController.createRoom(roomId, roomName);
-            res.status(200).json({ success: true, room });
+            const { roomId, roomName, username } = req.body;
+            if (!roomId ||!roomName || !username) {
+                return res.status(400).json({ 
+                    success: false, 
+                    message: 'Room name & Username are required' 
+                });
+            }
+            const room = await Room.create({
+                roomId,
+                roomName,
+                users: [username],
+                code: ''
+            });
+
+            // If user is logged in, add room to their createdRooms
+            if (req.user) {
+                await User.findByIdAndUpdate(
+                    req.user.id,
+                    { $push: { createdRooms: room._id } }
+                );
+            }
+            
+            console.log('Room created', room);
+            res.status(200).json({ 
+                success: true,
+                room 
+            });
         } catch (error) {
             console.error('Error creating room:', error);
-            res.status(500).json({ success: false, message: 'Failed to create room' });
+            res.status(500).json({ 
+                success: false, 
+                message: 'Failed to create room' 
+            });
         }
     },
 
@@ -70,20 +82,40 @@ const roomController = {
         try {
             const { roomId, username } = req.body;
 
-    
             if (!roomId || !username) {
-                return res.status(400).json({ success: false, message: 'Room ID and username are required' });
+                return res.status(400).json({ 
+                    success: false,
+                    message: 'Room ID & Username are required' 
+                });
             }
 
             const room = await Room.findOne({ roomId });
             if (!room) {
-                return res.json({ success: false, message: 'Room not found' });
+                return res.json({ 
+                    success: false, 
+                    message: 'Room not found' 
+                });
             }
     
             if (room.users.includes(username)) {
-                return res.json({ success: false, message: 'Username already taken' });
+                return res.json({ 
+                    success: false,
+                    message: 'Username already taken' 
+                });
             }
-            res.status(200).json({ success: true, room });
+
+            // If user is logged in, add room to their joinedRooms
+            if (req.user) {
+                await User.findByIdAndUpdate(
+                    req.user.id,
+                    { $push: { joinedRooms: room._id } }
+                );
+            }
+
+            res.status(200).json({ 
+                success: true, 
+                room 
+            });
         } catch (error) {
             console.error('Error joining room:', error);
             res.status(500).json({ success: false, message: 'Server error' });

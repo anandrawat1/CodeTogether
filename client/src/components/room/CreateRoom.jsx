@@ -11,12 +11,6 @@ const CreateRoom = () => {
 
     const createNewRoom = async (e) => {
         e.preventDefault();
-        
-        if (!username || !roomName) {
-            toast.error('Username and Room name are required');
-            return;
-        }
-
         try {
             setIsLoading(true);
             const id = uuidV4();
@@ -25,11 +19,13 @@ const CreateRoom = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ roomId: id, roomName })
+                body: JSON.stringify({ roomId: id, roomName, username })
             });
-            
-            if (!response.ok) {
-                throw new Error('Failed to create room');
+            const data = await response.json();
+            setIsLoading(false);
+            if (!data.success) {
+                toast.error(data.message || 'Failed to create room');
+                return;
             }
             
             toast.success('Room Created Successfully!');
@@ -42,7 +38,6 @@ const CreateRoom = () => {
             });
         } catch (error) {
             console.error('Error creating room:', error);
-            toast.error('Failed to create room');
             setIsLoading(false);
         }
     };
