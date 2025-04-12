@@ -39,6 +39,7 @@ const CreateRoom = () => {
         } catch (error) {
             console.error('Error creating room:', error);
             setIsLoading(false);
+            toast.error('Failed to create room');
         }
     };
 

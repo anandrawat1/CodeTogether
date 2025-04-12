@@ -42,6 +42,9 @@ const auth = {
     
                 const options  = {
                     expire: Date.now() + 3 * 24 * 60 * 60 * 1000,
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "Strict",
                 }
     
                 res.cookie("token", token, options).status(200).json({
@@ -71,7 +74,7 @@ const auth = {
             if(!firstName || !lastName || !email || !password) {
                 return res.status(400).json({
                     success: false,
-                    message: "Please Fill All The Details"
+                    message: "Please fill all the details"
                 })
             }
             const existingUser = await User.findOne({email: email});

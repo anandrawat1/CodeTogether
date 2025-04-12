@@ -1,83 +1,79 @@
 import React, { useState } from 'react';
-import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
-const JoinRoom = () => {
+const Login = () => {
     const navigate = useNavigate();
-    const [roomId, setRoomId] = useState('');
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const joinRoom = async () => {
+    const handleLogin = async (e) => {
+        e.preventDefault();
         try {
             setIsLoading(true);
             
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/rooms/join`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ roomId, username })
-            })
-            
+                body: JSON.stringify({ email, password }),
+            });
+
             const data = await response.json();
             setIsLoading(false);
-            
+
             if (!data.success) {
-                toast.error(data.message || 'Failed to join room');
+                toast.error(data.message || 'Failed to login');
                 return;
             }
 
-            toast.success('Joined Room Successfully!');
-            navigate(`/editor/${roomId}`, {
-                state: {
-                    username,
-                },
-            });
+            toast.success('Login successful!');
+            navigate('/');
+            
         } catch (error) {
-            console.error('Error joining room:', error);
+            console.error('Login error:', error);
             setIsLoading(false);
-            toast.error('Failed to join room');
+            toast.error('Failed to login');
         }
     };
 
     const handleInputEnter = (e) => {
-        if (e.code === 'Enter') {
-            joinRoom();
+        if (e.code === 'Enter' && email && password) {
+            handleLogin(e);
         }
     };
 
     return (
         <div>
-            {/* <h1 className="text-3xl font-bold text-[#bbb8ff] text-center mb-8">
-                Join Room
-            </h1> */}
             <div className="space-y-4">
                 <input
-                    type="text"
+                    type="email"
                     className="w-full px-4 py-2 bg-[#2A2A30] text-white rounded-md focus:outline-none placeholder-gray-400"
-                    placeholder="Room ID"
-                    onChange={(e) => setRoomId(e.target.value)}
-                    value={roomId}
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     onKeyUp={handleInputEnter}
                 />
                 <input
-                    type="text"
+                    type="password"
                     className="w-full px-4 py-2 bg-[#2A2A30] text-white rounded-md focus:outline-none placeholder-gray-400"
-                    placeholder="Username"
-                    onChange={(e) => setUsername(e.target.value)}
-                    value={username}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     onKeyUp={handleInputEnter}
                 />
                 <button 
                     className={`w-full bg-[#bbb8ff] text-black py-2 px-4 rounded-md hover:bg-[#aaaaff] transition-colors duration-200 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    onClick={joinRoom}
+                    onClick={handleLogin}
+                    disabled={isLoading}
                 >
-                    {isLoading ? 'Joining...' : 'Join Room'}
+                    {isLoading ? 'Logging in...' : 'Login'}
                 </button>
             </div>
         </div>
     );
 };
 
-export default JoinRoom; 
+export default Login; 
