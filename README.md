@@ -12,6 +12,8 @@ The **Real-Time Collaborative Code Editor** is an online platform that enables m
 
 ## Features
 
+- **Authentication** – Users can log in or sign up to access additional features; however, creating and joining rooms is allowed without logging in.
+- **Room History** – Logged-in users can view the history of rooms they have created or joined.
 - **Unique Room Creation** – Users can create unique rooms for collaboration.
 - **Real-Time Code Editing** – Multiple users can edit the same code in real time.
 - **Syntax Highlighting & Auto-Suggestions** – Enhances coding efficiency.
@@ -26,6 +28,7 @@ The **Real-Time Collaborative Code Editor** is an online platform that enables m
 
 - **Frontend:** React.js
 - **Backend:** Node.js, Express.js
+- **Database:** MongoDB with Mongoose
 - **Real-Time Communication:** Socket.io
 - **Code Compilation:** Judge0 API
 - **Code Editor:** CodeMirror
