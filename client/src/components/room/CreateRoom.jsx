@@ -19,7 +19,8 @@ const CreateRoom = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ roomId: id, roomName, username })
+                body: JSON.stringify({ roomId: id, roomName, username }),
+                credentials: 'include'
             });
             const data = await response.json();
             setIsLoading(false);

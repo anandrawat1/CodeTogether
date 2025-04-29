@@ -17,7 +17,8 @@ const JoinRoom = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ roomId, username })
+                body: JSON.stringify({ roomId, username }),
+                credentials: 'include'
             })
             
             const data = await response.json();

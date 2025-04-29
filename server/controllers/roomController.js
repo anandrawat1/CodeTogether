@@ -58,6 +58,7 @@ const roomController = {
 
             // If user is logged in, add room to their createdRooms
             if (req.user) {
+                console.log('User is logged in');
                 await User.findByIdAndUpdate(
                     req.user.id,
                     { $push: { createdRooms: room._id } }

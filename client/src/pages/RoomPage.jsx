@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import CreateRoom from '../components/room/CreateRoom';
 import JoinRoom from '../components/room/JoinRoom';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import Navbar from '../components/common/Navbar';
+import Footer from '../components/common/Footer';
 
 const Room = () => {
     const [view, setView] = useState('join');

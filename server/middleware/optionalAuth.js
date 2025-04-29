@@ -4,9 +4,9 @@ require('dotenv').config();
 const optionalAuth = async(req, res, next) => {
     try {
         const token = req?.body?.token || req?.cookies?.token || req?.header("Authorization")?.replace("Bearer ", "");
-
         if(!token) {
             // If no token, just continue without setting req.user
+            console.log("No token, continuing as unauthenticated user");
             return next();
         }
 

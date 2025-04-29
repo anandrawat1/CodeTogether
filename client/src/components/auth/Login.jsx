@@ -1,15 +1,24 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import validator from 'validator';
+import { useAuth } from '../../context/AuthContext';
 
 const Login = () => {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        
+        if (!validator.isEmail(email)) {
+            toast.error('Please enter a valid email address');
+            return;
+        }
+
         try {
             setIsLoading(true);
             
@@ -18,6 +27,7 @@ const Login = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify({ email, password }),
             });
 
@@ -29,8 +39,9 @@ const Login = () => {
                 return;
             }
 
+            await login(data.user);
             toast.success('Login successful!');
-            navigate('/');
+            navigate('/my-room');
             
         } catch (error) {
             console.error('Login error:', error);

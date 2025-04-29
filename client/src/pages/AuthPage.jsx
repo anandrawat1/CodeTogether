@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Login from '../components/auth/Login';
 import Signup from '../components/auth/Signup';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import Navbar from '../components/common/Navbar';
+import Footer from '../components/common/Footer';
 const Auth = () => {
     const [view, setView] = useState('login');
 
@@ -33,7 +33,7 @@ const Auth = () => {
                     </p>
 
                     {/* Main form content */}
-                    {view === 'login' ? <Login /> : <Signup />}
+                    {view === 'login' ? <Login /> : <Signup setView={setView} />}
 
                     {/* Toggle view option */}
                     <div className="mt-6">

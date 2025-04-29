@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
 const auth = {
     login: async (req, res) => {
         try {
@@ -43,8 +44,8 @@ const auth = {
                 const options  = {
                     expire: Date.now() + 3 * 24 * 60 * 60 * 1000,
                     httpOnly: true,
-                    secure: true,
-                    sameSite: "Strict",
+                    secure: false,
+                    sameSite: "Lax",
                 }
     
                 res.cookie("token", token, options).status(200).json({
@@ -67,6 +68,7 @@ const auth = {
             })
         }
     },
+
     signup: async(req, res) => {
         try {
             const { firstName, lastName, email, password } = req.body;
@@ -107,8 +109,28 @@ const auth = {
                 message: "User cannot be registered, Please try again later!"
             })
         }
-        
-    }
+    },
+
+    logout: (req, res) => {
+        try {
+            res.clearCookie('token', {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'Strict',
+            });
+    
+            res.status(200).json({
+                success: true,
+                message: 'Logged out successfully',
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                success: false,
+                message: 'Logout failed',
+            });
+        }
+    }    
 }
 
 module.exports = auth;

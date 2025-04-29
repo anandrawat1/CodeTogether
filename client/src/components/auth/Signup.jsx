@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import validator from 'validator';
 
-const Signup = () => {
+const Signup = ({ setView }) => {
     const navigate = useNavigate();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -12,6 +13,10 @@ const Signup = () => {
 
     const handleSignup = async (e) => {
         e.preventDefault();
+        if (!validator.isEmail(email)) {
+            toast.error('Please enter a valid email address');
+            return;
+        }
         try {
             setIsLoading(true);
             
@@ -32,7 +37,7 @@ const Signup = () => {
             }
 
             toast.success('Account created successfully!');
-            navigate('/');
+            setView('login');
             
         } catch (error) {
             console.error('Signup error:', error);

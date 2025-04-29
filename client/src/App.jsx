@@ -1,17 +1,25 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Room from './pages/Room';
+import Room from './pages/RoomPage';
 import EditorPage from './pages/EditorPage';
-import Auth from './pages/Auth';
+import Auth from './pages/AuthPage';
+import Home from './pages/HomePage';
+import ScrollToTop from './components/ScrollToTop';
+import MyRoom from './pages/MyRoomPage';
 import './App.css';
 
 const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Room />} />
-      <Route path="/editor/:roomId" element={<EditorPage />} />
-      <Route path="/auth" element={<Auth />} />
-    </Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/room" element={<Room />} />
+        <Route path="/editor/:roomId" element={<EditorPage />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/my-room" element={<MyRoom />} />
+      </Routes>
+    </>
   );
 };
 
