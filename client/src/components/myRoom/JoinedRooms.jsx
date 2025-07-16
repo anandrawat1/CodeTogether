@@ -10,7 +10,7 @@ const JoinedRooms = ({ rooms, searchQuery }) => {
   );
 
   const handleJoinRoom = () => {
-    navigate("/room")
+    navigate("/room?mode=join")
   };
 
   return (

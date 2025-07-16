@@ -10,6 +10,8 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         checkAuth();
     }, []);
+    //with out itAfter refreshing the page, your React app will think the user is logged out, even though they still have a valid session in the backend.
+    // Navbar will show the Login button instead of the user icon, unless you manually login again.
 
     const checkAuth = async () => {
         try {

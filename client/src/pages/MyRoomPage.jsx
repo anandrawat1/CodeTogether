@@ -1,58 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
 import JoinedRooms from '../components/myRoom/JoinedRooms';
 import CreatedRooms from '../components/myRoom/CreatedRooms';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
+import useFetchRooms from '../hooks/useFetchRooms';
+
 
 const MyRoomPage = () => {
   const [activeTab, setActiveTab] = useState('joined');
   const [searchQuery, setSearchQuery] = useState('');
-  const [joinedRooms, setJoinedRooms] = useState([]);
-  const [createdRooms, setCreatedRooms] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-
-  useEffect(() => {
-    const fetchRooms = async () => {
-      try {
-        setLoading(true);
-        
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/getMyRooms`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          credentials: 'include'
-        });
-        
-        if (response.status === 401) {
-          setIsLoggedIn(false);
-          return;
-        }
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        
-        if (data.success) {
-          setJoinedRooms(data.joinedRooms || []);
-          setCreatedRooms(data.createdRooms || []);
-        } else {
-          console.error('API returned an error:', data.message);
-        }
-      } catch (error) {
-        console.error('Error fetching rooms:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRooms();
-  }, []);
+  const { joinedRooms, createdRooms, loading, isLoggedIn } = useFetchRooms(); //added custom hook
 
   const renderContent = () => {
     if (loading) {

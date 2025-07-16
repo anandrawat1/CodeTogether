@@ -58,7 +58,7 @@ const Signup = ({ setView }) => {
                 <input
                     type="text"
                     className="w-full px-4 py-2 bg-[#2A2A30] text-white rounded-md focus:outline-none placeholder-gray-400"
-                    placeholder="Full Name"
+                    placeholder="First Name"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     onKeyUp={handleInputEnter}

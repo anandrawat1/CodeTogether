@@ -3,9 +3,12 @@ import CreateRoom from '../components/room/CreateRoom';
 import JoinRoom from '../components/room/JoinRoom';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
+import { useSearchParams } from 'react-router-dom';
 
 const Room = () => {
-    const [view, setView] = useState('join');
+    const [searchParams] = useSearchParams();
+    const mode = searchParams.get('mode');
+    const [view, setView] = useState(mode === 'create' ? 'create' : 'join');
 
     return (
         <>

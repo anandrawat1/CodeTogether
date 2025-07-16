@@ -10,7 +10,7 @@ const CreatedRooms = ({ rooms, searchQuery }) => {
   );
 
   const handleCreateRoom = () => {
-    navigate('/room');
+    navigate('/room?mode=create');
   };
 
   return (
