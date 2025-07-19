@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
-const JoinRoom = () => {
+const JoinRoom = ({ roomId: initialRoomId }) => {
     const navigate = useNavigate();
-    const [roomId, setRoomId] = useState('');
+    const [roomId, setRoomId] = useState(initialRoomId || '');
     const [username, setUsername] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -54,7 +54,7 @@ const JoinRoom = () => {
                 Join Room
             </h1> */}
             <div className="space-y-4">
-                <input
+                <input                
                     type="text"
                     className="w-full px-4 py-2 bg-[#2A2A30] text-white rounded-md focus:outline-none placeholder-gray-400"
                     placeholder="Room ID"

@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { FiPlus } from 'react-icons/fi';
 
@@ -31,6 +30,7 @@ const CreatedRooms = ({ rooms, searchQuery }) => {
         <div
           key={room._id}
           className="flex flex-col justify-between h-64 p-6 bg-[#2A2A30] border border-[#393E46] rounded-lg shadow-md hover:shadow-lg hover:border-[#00acb5] transition-all cursor-pointer"
+          onClick={() => navigate(`/room/${room.roomId}`)}
         >
           <div>
             <h3 className="text-xl font-semibold text-white mb-2">{room.roomName}</h3>

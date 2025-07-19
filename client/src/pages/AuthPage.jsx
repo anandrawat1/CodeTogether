@@ -11,11 +11,14 @@ const Auth = () => {
         <Navbar />  
         <div className="h-[calc(100vh-3.5rem)] bg-[#232329] flex">
             <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-b overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-[#bbb8ff]/80 to-[#9d99ff]/80 z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-b z-10"></div>
                 <div 
                     className="absolute inset-0 bg-cover bg-center z-0" 
                     style={{
-                        backgroundImage: `url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80')`,
+                        backgroundImage: `url('/3.png')`,
+                        backgroundSize: 'contain',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
                     }}
                 ></div>
             </div>

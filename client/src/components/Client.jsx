@@ -28,10 +28,11 @@ const Client = ({ clients, currentUsername, roomId, socketRef }) => {
 
     const copyRoomId = async () => {
         try {
-            await navigator.clipboard.writeText(roomId);
-            toast.success('Room ID copied.');
+            const roomLink = `${window.location.origin}/room/${roomId}`;
+            await navigator.clipboard.writeText(roomLink);
+            toast.success('Room link copied.');
         } catch {
-            toast.error('Could not copy Room ID.');
+            toast.error('Could not copy Room link.');
         }
     };
 

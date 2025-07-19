@@ -109,7 +109,7 @@ const roomController = {
             if (req.user) {
                 await User.findByIdAndUpdate(
                     req.user.id,
-                    { $push: { joinedRooms: room._id } }
+                    { $addToSet: { joinedRooms: room._id } }
                 );
             }
 
