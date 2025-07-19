@@ -6,7 +6,7 @@ const JoinedRooms = ({ rooms, searchQuery }) => {
   const navigate = useNavigate();
 
   const filteredRooms = rooms.filter((room) =>
-    room.roomName.toLowerCase().includes(searchQuery.toLowerCase())
+    room.roomName.toLowerCase().includes(searchQuery.toLowerCase().trim())
   );
 
   const handleJoinRoom = () => {

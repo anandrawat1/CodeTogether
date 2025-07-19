@@ -27,7 +27,7 @@ const Navbar = () => {
     <nav className="bg-[#232329] h-14 shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto flex items-center justify-between h-full px-4">
             {/* Logo */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3" onClick={() => window.scrollTo(0, 0)}>
                 <div className="w-8 h-8 bg-[#bbb8ff] rounded-full flex items-center justify-center">
                     <span className="text-[#232329] font-bold text-lg">C</span>
                 </div>

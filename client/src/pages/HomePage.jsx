@@ -3,37 +3,45 @@ import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
+import { 
+  LuCode, 
+  LuVideo, 
+  LuMonitorPlay, 
+  LuPlay, 
+  LuDownload, 
+  LuPenTool 
+} from "react-icons/lu";
 
 const features = [
   {
-    title: "Real-time Collaboration",
+    title: "Real-Time Code Editing",
     description: "Code together in real-time with your team members. See changes instantly as they happen.",
-    icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+    icon: <LuCode size={24} />
   },
   {
-    title: "Integrated Video Calls",
-    description: "Connect face-to-face with built-in video calls. Make collaboration more personal and effective.",
-    icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m22 8-6 4 6 4V8Z"/><rect width="14" height="12" x="2" y="6" rx="2" ry="2"/></svg>
+    title: "Video Calls & Live Chat",
+    description: "Connect with your team using built-in video calls and live chat for smooth, effective collaboration.",
+    icon: <LuVideo size={24} />
   },
   {
-    title: "Interactive Whiteboard",
-    description: "Visualize ideas and explain concepts using our built-in whiteboard feature.",
-    icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="m7 21 5-5 5 5"/></svg>
+    title: "Real-Time Preview",
+    description: "See frontend output update in real-time as you write HTML, CSS, or JavaScript.",
+    icon: <LuMonitorPlay size={24} />
   },
   {
-    title: "Multiple Language Support",
-    description: "Code in various programming languages with syntax highlighting and auto-completion.",
-    icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+    title: "Compilation & Execution",
+    description: "Write, compile, and execute code live within the platform no external setup required.",
+    icon: <LuPlay  size={24} />
   },
   {
-    title: "Chat & Communication",
-    description: "Built-in chat system for quick communication and file sharing with your team.",
-    icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    title: "Download Code",
+    description: "Download your code files with a single click. Take your work with you or share it anywhere.",
+    icon: <LuDownload size={24} />
   },
   {
-    title: "Version Control",
-    description: "Track changes and manage code versions with integrated version control support.",
-    icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    title: "Collaborative Whiteboard",
+    description: "Draw, sketch, and visualize ideas together using a shared interactive whiteboard.",
+    icon: <LuPenTool size={24} />
   }
 ];
 
@@ -48,11 +56,11 @@ const Home = () => {
           <div className="mx-auto max-w-7xl px-4 md:px-6 relative">
             <div className="absolute inset-0 -z-10 h-full w-full bg-[#1c1e29] bg-[linear-gradient(to_right,#393E46_1px,transparent_1px),linear-gradient(to_bottom,#393E46_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
 
-            <div className="text-center max-w-3xl mx-auto mb-8">
+            <div className="text-center max-w-4xl mx-auto mb-8">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 bg-gradient-to-r from-[#bbb8ff] to-[#232329] text-transparent bg-clip-text">
               Collaborative Code Editor
               </h1>
-              <p className="text-lg md:text-xl text-gray-300 mb-6 max-w-2xl mx-auto">
+              <p className="text-lg md:text-xl text-gray-300 mb-6 max-w-4xl mx-auto">
                 Experience seamless collaboration with real-time code editing, integrated video calls, and interactive whiteboard.
                 The perfect platform for remote pair programming and team collaboration.
               </p>
@@ -84,9 +92,8 @@ const Home = () => {
                 Features
               </div>
               <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white">Everything You Need to Collaborate</h2>
-              <p className="max-w-[800px] text-gray-300 md:text-lg">
-                Our platform provides all the essential tools for effective remote collaboration and pair programming.
-                Code, communicate, and create together seamlessly.
+              <p className="max-w-4xl text-gray-300 md:text-lg">
+                Our platform offers a powerful suite of tools designed for seamless remote programming, team collaboration, and real-time productivity. Code, communicate, and create together.
               </p>
             </div>
 

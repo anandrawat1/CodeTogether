@@ -7,11 +7,11 @@ const Footer = () => {
   return (
     <footer className="bg-gray-800 text-white pt-8">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-16">
           {/* About Project Section */}
           <div className="mb-6">
             <h3 className="text-xl font-bold mb-4">CodeTogether</h3>
-            <p className="text-gray-300">
+            <p className="text-gray-300 text-justify pr-5">
               A collaborative coding platform that enables real-time code sharing and pair programming.
             </p>
           </div>
@@ -42,19 +42,15 @@ const Footer = () => {
           <div className="mb-6">
             <h3 className="text-xl font-bold mb-4">Connects</h3>
             <div className="flex space-x-4">
-              <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer" 
+              <a href="https://github.com/shomik-das" target="_blank" rel="noopener noreferrer" 
                  className="text-gray-300 hover:text-white transition">
                 <FaGithub size={24} />
               </a>
-              <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer"
+              <a href="https://www.linkedin.com/in/shomikdas/" target="_blank" rel="noopener noreferrer"
                  className="text-gray-300 hover:text-white transition">
                 <FaLinkedin size={24} />
               </a>
-              <a href="https://twitter.com/yourusername" target="_blank" rel="noopener noreferrer"
-                 className="text-gray-300 hover:text-white transition">
-                <FaTwitter size={24} />
-              </a>
-              <a href="https://instagram.com/yourusername" target="_blank" rel="noopener noreferrer"
+              <a href="https://www.instagram.com/shomik_das/" target="_blank" rel="noopener noreferrer"
                  className="text-gray-300 hover:text-white transition">
                 <FaInstagram size={24} />
               </a>
