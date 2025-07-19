@@ -75,7 +75,7 @@ const Home = () => {
             <div className="relative mx-auto max-w-5xl">
               <div className="rounded-xl overflow-hidden shadow-2xl border border-[#393E46] bg-[#1c1e29]">
                 <img
-                  src="../public/2.png"
+                  src="../public/4.png"
                   alt="Code Together Editor Preview"
                   className="w-full h-auto"
                 />

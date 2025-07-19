@@ -26,6 +26,16 @@ app.use(express.json());
 app.use('/api/rooms', roomRoutes);
 app.use('/api/users', userRoutes);
 
+app.get('/', (req, res) => {
+    res.send('Welcome to Code Together API');
+});
+app.get("*", (req, res) => {
+    res.status(404).json({
+        success: false,
+        message: "Route not found"
+    });
+});
+
 const server = http.createServer(app);
 const io = initializeSocket(server);
 
@@ -36,3 +46,8 @@ const PORT = process.env.PORT;
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+
+
+
+
