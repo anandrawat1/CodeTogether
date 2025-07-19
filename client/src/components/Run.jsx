@@ -5,8 +5,8 @@ const Run = ({ code, language }) => {
     const [output, setOutput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    const API_KEY = "80ee849ef0mshfc84d34bfee3069p16f169jsnd6848de369cc";
-    const API_HOST = "judge0-ce.p.rapidapi.com";
+    const API_KEY = import.meta.env.VITE_CODE_COMPILE_API_KEY;
+    const API_HOST = import.meta.env.VITE_CODE_COMPILE_API_HOST;
     const API_URL = `https://${API_HOST}`;
 
     const languageIds = {

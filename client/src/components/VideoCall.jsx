@@ -3,7 +3,7 @@ import AgoraRTC from 'agora-rtc-sdk-ng';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMicrophone, faMicrophoneSlash, faVideo, faVideoSlash } from '@fortawesome/free-solid-svg-icons';
 
-const APP_ID = "3f648a39f1064e5eaf77adbe6ec066bc";
+const APP_ID = import.meta.env.VITE_VIDEO_CALL_APP_ID;
 
 const VideoCall = ({ roomId, username }) => {
     const [localVideoTrack, setLocalVideoTrack] = useState(null);
