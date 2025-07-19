@@ -10,9 +10,12 @@ const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 app.use(cors({
-    origin: process.env.CLIENT_URL,
+    origin: process.env.CLIENT_URL || "https://code-together-git-main-shomik25s-projects.vercel.app",
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }));
+
+
 app.use(cookieParser());
 app.use(express.json());
 
