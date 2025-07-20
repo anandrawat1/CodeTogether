@@ -46,7 +46,6 @@ const features = [
 ];
 
 const Home = () => {
-  console.log("backend url: " + import.meta.env.VITE_BACKEND_URL);
   return (
     <>
     <Navbar />
@@ -76,7 +75,7 @@ const Home = () => {
             <div className="relative mx-auto max-w-5xl">
               <div className="rounded-xl overflow-hidden shadow-2xl border border-[#393E46] bg-[#1c1e29]">
                 <img
-                  src="../public/4.png"
+                  src="/2.png"
                   alt="Code Together Editor Preview"
                   className="w-full h-auto"
                 />
