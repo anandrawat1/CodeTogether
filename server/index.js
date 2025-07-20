@@ -9,8 +9,9 @@ const roomRoutes = require('./routes/roomRoutes');
 const userRoutes = require('./routes/userRoutes');
 
 const app = express();
+console.log('frontend url: ', process.env.CLIENT_URL);
 app.use(cors({
-    origin: process.env.CLIENT_URL || "https://code-together-git-main-shomik25s-projects.vercel.app",
+    origin: process.env.CLIENT_URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }));

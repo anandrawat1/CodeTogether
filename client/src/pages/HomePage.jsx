@@ -46,7 +46,7 @@ const features = [
 ];
 
 const Home = () => {
-  console.log(import.meta.env.VITE_BACKEND_URL);
+  console.log("backend url: " + import.meta.env.VITE_BACKEND_URL);
   return (
     <>
     <Navbar />
