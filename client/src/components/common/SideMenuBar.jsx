@@ -4,7 +4,7 @@ import { NavLink, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import LogoutIcon from '@mui/icons-material/Logout';
 
-const Sidebar = ({ onLogout }) => {
+const SideMenuBar = ({ onLogout }) => {
   const { user } = useAuth();
 
   const burgerStyles = {
@@ -115,4 +115,4 @@ const Sidebar = ({ onLogout }) => {
   );
 };
 
-export default Sidebar;
+export default SideMenuBar;

@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { IconButton, Menu, MenuItem, Avatar } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useState } from 'react';
-import Sidebar from './Sidebar';
+import SideMenuBar from './SideMenuBar';
 
 const Navbar = () => {
   
@@ -161,7 +161,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Sidebar */}
-        <Sidebar onLogout={handleLogout} />
+        <SideMenuBar onLogout={handleLogout} />
       </div>
     </nav>
   );
