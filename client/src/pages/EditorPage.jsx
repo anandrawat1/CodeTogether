@@ -121,7 +121,6 @@ const EditorPage = () => {
                         roomId={roomId} 
                         onCodeChange={handleCodeChange}
                         onLanguageChange={handleLanguageChange}
-                        myUsername={username}
                     />
                 </Panel>
             </PanelGroup>
