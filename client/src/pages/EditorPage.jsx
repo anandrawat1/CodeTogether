@@ -5,6 +5,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import Sidebar from '../components/Sidebar';
 import Client from '../components/Client';
 import Editor from '../components/Editor';
+import MonacoEditor from '../components/MonacoEditor';
 import Chat from '../components/Chat';
 import Whiteboard from '../components/Whiteboard';
 import Run from '../components/Run';
@@ -115,11 +116,12 @@ const EditorPage = () => {
                 <PanelResizeHandle className="w-1 bg-[#393E46] hover:bg-[#bbb8ff] transition-colors duration-200 cursor-col-resize">
                 </PanelResizeHandle>
                 <Panel defaultSize={70}>
-                    <Editor 
+                    <MonacoEditor 
                         socketRef={socketRef} 
                         roomId={roomId} 
                         onCodeChange={handleCodeChange}
                         onLanguageChange={handleLanguageChange}
+                        myUsername={username}
                     />
                 </Panel>
             </PanelGroup>
