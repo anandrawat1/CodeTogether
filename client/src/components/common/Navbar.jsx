@@ -7,6 +7,7 @@ import { useState } from 'react';
 import Sidebar from './Sidebar';
 
 const Navbar = () => {
+  
   const { user, logout } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);

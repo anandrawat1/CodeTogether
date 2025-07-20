@@ -106,6 +106,7 @@ const Sidebar = ({ onLogout }) => {
                   Get Started
                 </Link>
               </>
+              
             )}
           </div>
         </div>
