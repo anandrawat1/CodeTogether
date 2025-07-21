@@ -32,7 +32,7 @@ The **Real-Time Collaborative Code Editor** is an online platform that enables m
 - **Database:** MongoDB with Mongoose
 - **Real-Time Communication:** Socket.io
 - **Code Compilation:** Judge0 API
-- **Code Editor:** CodeMirror
+- **Code Editor:** Monaco
 - **Whiteboard:** Excalidraw
 
 
