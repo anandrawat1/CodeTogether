@@ -17,7 +17,7 @@ const Sidebar = ({ onToggle }) => {
   };
 
   return (
-    <div className="h-screen w-16 bg-[#232329] text-white flex flex-col items-center justify-center py-4 border-r border-gray-700 shadow-lg">
+    <div className="h-screen w-16 bg-[#1e1e1e] text-white flex flex-col items-center justify-center py-4 border-r border-gray-700 shadow-lg">
       <div className="flex flex-col space-y-8">
         <Tippy content="Connected Users" placement="right">
           <button

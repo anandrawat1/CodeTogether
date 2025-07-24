@@ -149,7 +149,7 @@ const VideoCall = ({ roomId, username }) => {
     };
 
     return (
-        <div className="h-full flex flex-col bg-[#232329] text-white overflow-hidden">
+        <div className="h-full flex flex-col bg-[#1e1e1e] text-white overflow-hidden">
             <div className="p-2 flex-shrink-0 flex justify-between items-center">
                 <p className="text-lg text-[#bbb8ff] mb-0">Video Call</p>
                 <div className="flex gap-2">

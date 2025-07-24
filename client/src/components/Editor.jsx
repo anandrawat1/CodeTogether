@@ -174,7 +174,7 @@ const Editor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => {
                     </div>
                 </div>
                 <span className="text-[#bbb8ff] text-lg">
-                    Code Together
+                    CodeTogether
                 </span>
                 <button
                     onClick={handleDownload}

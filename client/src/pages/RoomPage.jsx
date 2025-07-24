@@ -15,7 +15,7 @@ const Room = () => {
     return (
         <>
         <Navbar />
-        <div className="h-[calc(100vh-3.5rem)] bg-[#232329] flex">
+        <div className="h-[calc(100vh-3.5rem)] bg-[#1e1e1e] flex">
             <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-b overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-b z-10"></div>
                 <div 
@@ -33,7 +33,7 @@ const Room = () => {
             {/* Right side - Form */}
             <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-8">
                 <div className="max-w-md w-full">
-                    <h2 className="text-4xl font-bold text-white mb-4">
+                    <h2 className="text-5xl font-bold text-white mb-2">
                         {view === 'create' ? 'Create Room' : 'Join Room'}
                     </h2>
                     <p className="text-gray-400 mb-8">
@@ -54,7 +54,7 @@ const Room = () => {
                         </span>
                         <button
                             onClick={() => setView(view === 'create' ? 'join' : 'create')}
-                            className="text-[#bbb8ff] hover:text-[#aaaaff] transition-colors duration-200"
+                            className="text-[#bbb8ff] hover:text-[#aaaaff] transition-colors font-semibold duration-200"
                         >
                             {view === 'create' ? 'Join Room' : 'Create Room'}
                         </button>

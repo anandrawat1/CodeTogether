@@ -27,7 +27,7 @@ const MyRoomPage = () => {
           <p className="text-gray-300 text-lg mb-4">Please login to view your rooms</p>
           <Link 
             to="/auth" 
-            className="inline-block px-6 py-2 bg-[#bbb8ff] text-[#232329] rounded-full hover:bg-[#aaaaff] transition-colors duration-200 decoration-transparent"
+            className="inline-block px-6 py-2 bg-[#bbb8ff] text-[#232329] font-semibold rounded-full hover:bg-[#aaaaff] transition-colors duration-200 decoration-transparent"
           >
             Login Now
           </Link>
@@ -49,7 +49,7 @@ const MyRoomPage = () => {
   return (
     <>
     <Navbar />
-    <div className="min-h-[calc(100vh-3.5rem)] flex flex-col bg-[#232329]">
+    <div className="min-h-[calc(100vh-3.5rem)] flex flex-col bg-[#1e1e1e]">
       <div className="flex-grow container mx-auto px-4 py-8">
         <div className="mb-8">
           <input

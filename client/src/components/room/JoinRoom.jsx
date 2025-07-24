@@ -71,7 +71,7 @@ const JoinRoom = ({ roomId: initialRoomId }) => {
                     onKeyUp={handleInputEnter}
                 />
                 <button 
-                    className={`w-full bg-[#bbb8ff] text-black py-2 px-4 rounded-md hover:bg-[#aaaaff] transition-colors duration-200 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`w-full bg-[#bbb8ff] text-black py-2 px-4 rounded-md hover:bg-[#aaaaff] transition-colors font-semibold duration-200 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     onClick={joinRoom}
                 >
                     {isLoading ? 'Joining...' : 'Join Room'}

@@ -33,12 +33,12 @@ const SideMenuBar = ({ onLogout }) => {
       top: '0',
     },
     bmMenu: {
-      background: '#232329',
+      background: '#1e1e1e', // changed background color
       padding: '2.5rem 1.2rem 0',
       fontSize: '1rem',
     },
     bmItemList: {
-      color: '#fff',
+      color: '#d1d5db', // gray-300 text color
       display: 'flex',
       flexDirection: 'column',
       gap: '0.75rem',
@@ -51,8 +51,8 @@ const SideMenuBar = ({ onLogout }) => {
   const navLinkClass = ({ isActive }) =>
     `no-underline block px-4 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
       isActive
-        ? 'bg-[#353542] text-[#bbb8ff]'
-        : 'text-[#bbb8ff] hover:text-white hover:bg-[#353542]'
+        ? 'bg-[#353542] text-gray-300'
+        : 'text-gray-300 hover:text-white hover:bg-[#353542]'
     }`;
 
   return (
@@ -80,7 +80,7 @@ const SideMenuBar = ({ onLogout }) => {
               <>
                 <button
                   onClick={onLogout}
-                  className="no-underline text-[#bbb8ff] hover:text-white transition-colors duration-200 text-left px-4 py-2 flex items-center gap-2"
+                  className="no-underline text-gray-300 hover:text-white transition-colors duration-200 text-left px-4 py-2 flex items-center gap-2"
                 >
                   <LogoutIcon sx={{ fontSize: 20 }} /> Logout
                 </button>
@@ -95,7 +95,7 @@ const SideMenuBar = ({ onLogout }) => {
               <>
                 <Link
                   to="/auth"
-                  className="no-underline text-[#bbb8ff] hover:text-white transition-colors duration-200 px-4 py-2 text-base font-medium"
+                  className="no-underline text-gray-300 hover:text-white transition-colors duration-200 px-4 py-2 text-base font-medium"
                 >
                   Login
                 </Link>
@@ -106,7 +106,6 @@ const SideMenuBar = ({ onLogout }) => {
                   Get Started
                 </Link>
               </>
-              
             )}
           </div>
         </div>
