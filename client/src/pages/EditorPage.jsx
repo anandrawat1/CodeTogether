@@ -133,7 +133,7 @@ const EditorPage = () => {
                 );
             case 'draw':
                 return renderEditorWithPanel(
-                    <Whiteboard />
+                    <Whiteboard roomId={roomId} />
                 );
             case 'run':
                 return renderEditorWithPanel(

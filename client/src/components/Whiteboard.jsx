@@ -1,31 +1,16 @@
-import React from 'react';
-import { Excalidraw } from '@excalidraw/excalidraw';
+import React from 'react'
+import { Tldraw } from 'tldraw'
+import { useSyncDemo } from '@tldraw/sync'
+import 'tldraw/tldraw.css'
 
-const Whiteboard = () => {
+const Whiteboard = ({ roomId }) => {
+  const store = useSyncDemo({ roomId })
+
   return (
-    // <div className="h-full w-full bg-white">
-    //   <Excalidraw
-    //     theme="dark"
-    //     viewModeEnabled={false}
-    //     zenModeEnabled={false}
-    //     gridModeEnabled={false}
-    //   >
-    //   </Excalidraw>
-
-    <div className="h-full flex flex-col bg-[#232329] text-white overflow-hidden">
-      {/* <div className="p-2">
-        <p className="text-lg text-[#bbb8ff] mb-0">Whiteboard</p>
-      </div> */}
-      <div className="flex-1 bg-white overflow-hidden">
-        <Excalidraw
-          theme="dark"
-          viewModeEnabled={false}
-          zenModeEnabled={false}
-          gridModeEnabled={false}
-        />
-      </div>
+    <div className="tldraw__editor h-full bg-[#101011]">
+      {store && <Tldraw store={store} inferDarkMode defaultName="Editor" deepLinks />}
     </div>
-  );
-};
+  )
+}
 
-export default Whiteboard; 
+export default Whiteboard
