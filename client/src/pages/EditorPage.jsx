@@ -2,15 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams, useLocation, Navigate } from 'react-router-dom';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
-import Sidebar from '../components/Sidebar';
-import Client from '../components/Client';
-import Editor from '../components/Editor';
-import MonacoEditor from '../components/MonacoEditor';
-import Chat from '../components/Chat';
-import Whiteboard from '../components/Whiteboard';
-import Run from '../components/Run';
-import Preview from '../components/Preview';
-import VideoCall from '../components/VideoCall';
+
+import Sidebar from '../components/features/Sidebar';
+import Client from '../components/features/Client';
+import MonacoEditor from '../components/features/MonacoEditor';
+import Chat from '../components/features/Chat';
+import Whiteboard from '../components/features/Whiteboard';
+import Run from '../components/features/Run';
+import Preview from '../components/features/Preview';
+import VideoCall from '../components/features/VideoCall';
+
 import { initSocket } from '../initSocket';
 import ACTIONS from '../Actions';
 
@@ -19,74 +20,60 @@ const EditorPage = () => {
     const { roomId } = useParams();
     const location = useLocation();
     const navigate = useNavigate();
-    
-    // Extract username from location state
     const username = location.state?.username;
-    
+
     const [clients, setClients] = useState([]);
     const [sidebarContent, setSidebarContent] = useState('clients');
+    const [activeMobileView, setActiveMobileView] = useState(null);
     const [currentCode, setCurrentCode] = useState('');
     const [currentLanguage, setCurrentLanguage] = useState('javascript');
     const socketRef = useRef(null);
-    const codeRef = useRef("");
+    const codeRef = useRef('');
+
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
 
     useEffect(() => {
-        try {
-            socketRef.current = initSocket();
-            
-            socketRef.current.on('connect_error', handleError);
-            socketRef.current.on('connect_failed', handleError);
+        const socket = initSocket();
+        socketRef.current = socket;
 
-            function handleError(err) {
-                console.error('Socket connection error:', err);
-                toast.error('Socket connection failed.');
-                navigate('/');
-            }
+        socket.on('connect_error', handleError);
+        socket.on('connect_failed', handleError);
 
-            socketRef.current.emit(ACTIONS.JOIN, { roomId, username });
-
-            // Listen for new messages at EditorPage level
-            socketRef.current.on(ACTIONS.RECEIVE_MESSAGE, ({ username: senderUsername, message }) => {
-                if (senderUsername !== username) {
-                    toast.success('Got new message!');
-                }
-            });
-
-            socketRef.current.on(ACTIONS.JOINED, ({ clients, username, socketId }) => {
-                if (socketId !== socketRef.current.id) {
-                    toast.success(`${username} joined the room!`);
-                    socketRef.current.emit(ACTIONS.SYNC_CODE, {
-                        code: codeRef.current,
-                        socketId,
-                    });
-                }
-                setClients(clients);
-            });
-
-            socketRef.current.on(ACTIONS.DISCONNECTED, ({ socketId, username }) => {
-                toast.success(`${username} left the room!`);
-                setClients((prev) => {
-                    return prev.filter(client => client.socketId !== socketId);
-                });
-            });
-
-            return () => {
-                if (socketRef.current) {
-                    socketRef.current.disconnect();
-                    socketRef.current.off(ACTIONS.JOINED);
-                    socketRef.current.off(ACTIONS.DISCONNECTED);
-                    socketRef.current.off(ACTIONS.SYNC_CODE);
-                    socketRef.current.off(ACTIONS.RECEIVE_MESSAGE);
-                }
-            };
-        } catch (err) {
-            console.error('Socket initialization error:', err);
-            toast.error('Could not connect to the server.');
+        function handleError(err) {
+            console.error('Socket error:', err);
+            toast.error('Socket connection failed.');
             navigate('/');
         }
+
+        socket.emit(ACTIONS.JOIN, { roomId, username });
+
+        socket.on(ACTIONS.JOINED, ({ clients, username: joinedUsername, socketId }) => {
+            if (socketId !== socket.id) {
+                toast.success(`${joinedUsername} joined the room.`);
+                socket.emit(ACTIONS.SYNC_CODE, {
+                code: codeRef.current,
+                socketId,
+                });
+            }
+            setClients(clients);
+        });
+
+        socket.on(ACTIONS.DISCONNECTED, ({ socketId, username: leftUsername }) => {
+            toast.success(`${leftUsername} left the room.`);
+            setClients((prev) => prev.filter((client) => client.socketId !== socketId));
+        });
+
+        socket.on(ACTIONS.RECEIVE_MESSAGE, ({ username: sender }) => {
+            if (sender !== username) toast.success('New message received!');
+        });
+
+        return () => {
+            socket.disconnect();
+            socket.off();
+        };
     }, [roomId, username, navigate]);
 
-    // Add effect to handle sidebar content changes
+
     useEffect(() => {
         if (sidebarContent === 'clients' || sidebarContent === 'chat' || sidebarContent === 'run' || sidebarContent === 'preview' || sidebarContent === 'video') {
             socketRef.current?.emit(ACTIONS.REQUEST_CODE, { roomId });
@@ -102,67 +89,72 @@ const EditorPage = () => {
         setCurrentLanguage(language);
     };
 
-    if (!username) return <Navigate to="/" />;
-
-    const renderMainContent = () => {
-        const renderEditorWithPanel = (SideComponent) => (
-            <PanelGroup direction="horizontal" className="flex-1">
-                <Panel
-                    defaultSize={30} 
-                    minSize={SideComponent.type === Whiteboard || SideComponent.type === Preview ? 40 : 30} 
-                    maxSize={SideComponent.type === Whiteboard || SideComponent.type === Preview ? 65 : 50}>
-                    {SideComponent}
-                </Panel>
-                <PanelResizeHandle className="w-1 bg-[#393E46] hover:bg-[#bbb8ff] transition-colors duration-200 cursor-col-resize">
-                </PanelResizeHandle>
-                <Panel defaultSize={70}>
-                    <MonacoEditor 
-                        socketRef={socketRef} 
-                        roomId={roomId} 
-                        onCodeChange={handleCodeChange}
-                        onLanguageChange={handleLanguageChange}
-                    />
-                </Panel>
-            </PanelGroup>
-        );
-
-        switch (sidebarContent) {
-            case 'chat':
-                return renderEditorWithPanel(
-                    <Chat socketRef={socketRef} roomId={roomId} username={username} />
-                );
-            case 'draw':
-                return renderEditorWithPanel(
-                    <Whiteboard roomId={roomId} />
-                );
-            case 'run':
-                return renderEditorWithPanel(
-                    <Run code={currentCode} language={currentLanguage} />
-                );
-            case 'preview':
-                return renderEditorWithPanel(
-                    <Preview code={currentCode} language={currentLanguage} />
-                );
-            case 'video':
-                return renderEditorWithPanel(
-                    <VideoCall roomId={roomId} username={username} />
-                );
-            default:
-                return renderEditorWithPanel(
-                    <Client 
-                        clients={clients} 
-                        currentUsername={username} 
-                        roomId={roomId}
-                        socketRef={socketRef}
-                    />
-                );
+    const handleSidebarToggle = (tab) => {
+        if (isMobile) {
+            setActiveMobileView((prev) => (prev === tab ? null : tab));
+        }
+        else {
+            setSidebarContent(tab);
         }
     };
 
+    const renderSidebarComponent = (tab) => {
+        switch (tab) {
+            case 'chat':
+                return <Chat socketRef={socketRef} roomId={roomId} username={username} />;
+            case 'draw':
+                return <Whiteboard roomId={roomId} />;
+            case 'run':
+                return <Run code={currentCode} language={currentLanguage} />;
+            case 'preview':
+                return <Preview code={currentCode} language={currentLanguage} />;
+            case 'video':
+                return <VideoCall roomId={roomId} username={username} />;
+            default:
+                return <Client clients={clients} currentUsername={username} roomId={roomId} socketRef={socketRef} />;
+        }
+    };
+
+    const renderMobileContent = () => (
+        <div className="flex-1 md:hidden">
+            {activeMobileView ? (renderSidebarComponent(activeMobileView)) : (
+                <MonacoEditor
+                    socketRef={socketRef}
+                    roomId={roomId}
+                    onCodeChange={handleCodeChange}
+                    onLanguageChange={handleLanguageChange}
+                />
+            )}
+        </div>
+    );
+
+    const renderDesktopContent = () => {
+        const isWhiteboardOrPreview = sidebarContent === 'draw' || sidebarContent === 'preview';
+
+        return (
+            <div className="hidden md:flex flex-1">
+                <PanelGroup direction="horizontal" className="flex-1">
+                    <Panel defaultSize={30} minSize={isWhiteboardOrPreview ? 40 : 30} maxSize={isWhiteboardOrPreview ? 65 : 50}>
+                        {renderSidebarComponent(sidebarContent)}
+                    </Panel>
+                    <PanelResizeHandle className="w-1 bg-[#393E46] hover:bg-[#bbb8ff] transition-colors duration-200 cursor-col-resize" />
+                    <Panel defaultSize={70}>
+                        <MonacoEditor
+                            socketRef={socketRef}
+                            roomId={roomId}
+                            onCodeChange={handleCodeChange}
+                            onLanguageChange={handleLanguageChange}
+                        />
+                    </Panel>
+                </PanelGroup>
+            </div>
+        );
+    };
+
     return (
-        <div className="flex h-screen">
-            <Sidebar onToggle={setSidebarContent} />
-            {renderMainContent()}
+        <div className="flex h-screen pb-14 md:pb-0 overflow-hidden">
+            <Sidebar setActiveMobileView={setActiveMobileView} setSidebarContent={setSidebarContent}/>
+            {isMobile ? renderMobileContent() : renderDesktopContent()}
         </div>
     );
 };

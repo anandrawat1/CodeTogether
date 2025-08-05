@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import ACTIONS from '../Actions';
+import ACTIONS from '../../Actions';
 
 const Chat = ({ socketRef, roomId, username }) => {
   const [messages, setMessages] = useState([]);

@@ -5,7 +5,7 @@ import { FaSignOutAlt } from "react-icons/fa";
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import ACTIONS from '../Actions';
+import ACTIONS from '../../Actions';
 
 const ClientAvatar = ({ username, isCurrentUser = false }) => {
     

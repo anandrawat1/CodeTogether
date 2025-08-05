@@ -4,7 +4,7 @@ import Room from './pages/RoomPage';
 import EditorPage from './pages/EditorPage';
 import Auth from './pages/AuthPage';
 import Home from './pages/HomePage';
-import ScrollToTop from './components/ScrollToTop';
+import ScrollToTop from './components/common/ScrollToTop';
 import MyRoom from './pages/MyRoomPage';
 import './App.css';
 

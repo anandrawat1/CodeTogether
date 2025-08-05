@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Editor from '@monaco-editor/react';
 import { FiDownload, FiChevronDown } from 'react-icons/fi';
-import ACTIONS from '../Actions';
+import ACTIONS from '../../Actions';
 
 const MonacoEditor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => {
   const [language, setLanguage] = useState('javascript');
