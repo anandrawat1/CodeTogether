@@ -33,7 +33,7 @@ The **Real-Time Collaborative Code Editor** is an online platform that enables m
 - **Real-Time Communication:** Socket.io
 - **Code Compilation:** Judge0 API
 - **Code Editor:** Monaco
-- **Whiteboard:** Excalidraw
+- **Whiteboard:** Tldraw
 
 
 ## Sequence Diagram
@@ -63,4 +63,5 @@ The **Real-Time Collaborative Code Editor** is an online platform that enables m
 ## Contributing
 
 Feel free to submit issues or pull requests to improve the project. Contributions are welcome!
+
 
