@@ -81,7 +81,6 @@ const MonacoEditor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => 
     socketRef.current?.emit(ACTIONS.SYNC_CODE, {
       socketId: socketRef.current.id,
       roomId,
-      code,
     });
   };
 

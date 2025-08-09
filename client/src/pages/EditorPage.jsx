@@ -51,8 +51,8 @@ const EditorPage = () => {
             if (socketId !== socket.id) {
                 toast.success(`${joinedUsername} joined the room.`);
                 socket.emit(ACTIONS.SYNC_CODE, {
-                code: codeRef.current,
                 socketId,
+                roomId,
                 });
             }
             setClients(clients);

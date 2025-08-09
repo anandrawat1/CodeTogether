@@ -115,9 +115,7 @@ function initializeSocket(server) {
                     });
 
                     const clients = getAllConnectedClients(io, roomId);
-                    if (clients.length > 0) {
-                        await roomController.updateUsers(roomId, clients.map(client => client.username));
-                    }
+                    await roomController.updateUsers(roomId, clients.map(client => client.username));
                 }
             }
 
@@ -134,9 +132,7 @@ function initializeSocket(server) {
             });
 
             const clients = getAllConnectedClients(io, roomId);
-            if (clients.length > 0) {
-                const update = await roomController.updateUsers(roomId, clients.map(client => client.username));
-            }
+            await roomController.updateUsers(roomId, clients.map(client => client.username));
             
             delete userSocketMap[socket.id];
         });
