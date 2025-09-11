@@ -7,6 +7,7 @@ const MonacoEditor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => 
   const [language, setLanguage] = useState('javascript');
   const [code, setCode] = useState('');
   const editorRef = useRef(null);
+  const isRemoteUpdate = useRef(false); // Track if update is from remote
 
   const languages = [
     { value: 'html', label: 'HTML' },
@@ -51,46 +52,74 @@ const MonacoEditor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => 
     window.URL.revokeObjectURL(url);
   };
 
+  // Load saved code from localStorage on mount
   useEffect(() => {
     const savedCode = localStorage.getItem(`code-${roomId}`);
-    if (savedCode){
+    if (savedCode) {
       setCode(savedCode);
     }
   }, [roomId]);
 
+  // Save code to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem(`code-${roomId}`, code);
   }, [code, roomId]);
 
+  // Set up socket listener for code changes
   useEffect(() => {
     if (!socketRef.current) return;
 
-    socketRef.current.on(ACTIONS.CODE_CHANGE, ({ code: incomingCode }) => {
-      if (incomingCode !== null && incomingCode !== code) {
+    const handleCodeChange = ({ code: incomingCode }) => {
+      if (incomingCode !== null && incomingCode !== undefined) {
+        isRemoteUpdate.current = true; // Mark as remote update
         setCode(incomingCode);
+        
+        // Update the editor directly if it exists
+        if (editorRef.current) {
+          const currentValue = editorRef.current.getValue();
+          if (currentValue !== incomingCode) {
+            editorRef.current.setValue(incomingCode);
+          }
+        }
       }
-    });
+    };
+
+    socketRef.current.on(ACTIONS.CODE_CHANGE, handleCodeChange);
 
     return () => {
-      socketRef.current.off(ACTIONS.CODE_CHANGE);
+      socketRef.current.off(ACTIONS.CODE_CHANGE, handleCodeChange);
     };
-  }, [socketRef, code]);
+  }, [socketRef]); // Remove 'code' from dependencies
 
   const handleEditorDidMount = (editor, monaco) => {
     editorRef.current = editor;
-    socketRef.current?.emit(ACTIONS.SYNC_CODE, {
-      socketId: socketRef.current.id,
-      roomId,
-    });
+    
+    // Request sync after editor mounts
+    if (socketRef.current) {
+      socketRef.current.emit(ACTIONS.SYNC_CODE, {
+        socketId: socketRef.current.id,
+        roomId,
+      });
+    }
   };
 
   const handleEditorChange = (value) => {
-    setCode(value);
-    onCodeChange(value);
-    socketRef.current.emit(ACTIONS.CODE_CHANGE, {
-      roomId,
-      code: value,
-    });
+    // Check if this is a remote update
+    if (isRemoteUpdate.current) {
+      isRemoteUpdate.current = false;
+      return; // Don't emit if it's a remote update
+    }
+
+    setCode(value || '');
+    onCodeChange(value || '');
+    
+    // Only emit if we have a socket connection
+    if (socketRef.current) {
+      socketRef.current.emit(ACTIONS.CODE_CHANGE, {
+        roomId,
+        code: value || '',
+      });
+    }
   };
 
   const handleLanguageChange = (e) => {
@@ -151,4 +180,4 @@ const MonacoEditor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => 
   );
 };
 
-export default MonacoEditor ;
+export default MonacoEditor;

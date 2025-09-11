@@ -1,72 +1,54 @@
-import React from 'react';
-import { FaGithub, FaLinkedin, FaTwitter, FaInstagram } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa"
 
-const Footer = () => {
-  const currentYear = new Date().getFullYear();
-
+export default function Footer() {
   return (
-    <footer className="bg-gray-800 text-white pt-8">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-16">
-          {/* About Project Section */}
-          <div className="mb-6">
-            <h3 className="text-xl font-bold mb-4">CodeTogether</h3>
-            <p className="text-gray-300 text-justify pr-5">
-              A collaborative coding platform that enables real-time code sharing and pair programming.
-            </p>
-          </div>
+    <footer className="bg-[#1f2937] text-gray-400">
+      <div className="mx-auto max-w-7xl px-8 pt-16 pb-8">
+        {/* Brand */}
+        <div className="text-center">
+          <h2 className="text-2xl font-semibold tracking-tight text-white hover:text-indigo-400 transition-colors">
+            CodeTogether
+          </h2>
+          <p className="mt-2 text-sm text-gray-500">
+            Real-time collaborative coding platform for pair programming and learning.
+          </p>
+        </div>
 
-          {/* Quick Links */}
-          <div className="mb-6">
-            <h3 className="text-xl font-bold mb-4">Quick Links</h3>
-            <ul className="space-y-2 p-0">
-              <li><a href="/" className="text-gray-300 hover:text-white transition">Home</a></li>
-              <li><a href="/my-room" className="text-gray-300 hover:text-white transition">My Rooms</a></li>
-              <li><a href="/about" className="text-gray-300 hover:text-white transition">About</a></li>
-              <li><a href="/contact" className="text-gray-300 hover:text-white transition">Contact</a></li>
-            </ul>
-          </div>
-
-          {/* Resources */}
-          <div className="mb-6">
-            <h3 className="text-xl font-bold mb-4">Resources</h3>
-            <ul className="space-y-2 p-0">
-              <li><a href="/docs" className="text-gray-300 hover:text-white transition">Documentation</a></li>
-              <li><a href="/tutorials" className="text-gray-300 hover:text-white transition">Tutorials</a></li>
-              <li><a href="/blog" className="text-gray-300 hover:text-white transition">Blog</a></li>
-              <li><a href="/faq" className="text-gray-300 hover:text-white transition">FAQ</a></li>
-            </ul>
-          </div>
-
-          {/* Social Media Links */}
-          <div className="mb-6">
-            <h3 className="text-xl font-bold mb-4">Connects</h3>
-            <div className="flex space-x-4">
-              <a href="https://github.com/shomik-das" target="_blank" rel="noopener noreferrer" 
-                 className="text-gray-300 hover:text-white transition">
-                <FaGithub size={24} />
-              </a>
-              <a href="https://www.linkedin.com/in/shomikdas/" target="_blank" rel="noopener noreferrer"
-                 className="text-gray-300 hover:text-white transition">
-                <FaLinkedin size={24} />
-              </a>
-              <a href="https://www.instagram.com/shomik_das/" target="_blank" rel="noopener noreferrer"
-                 className="text-gray-300 hover:text-white transition">
-                <FaInstagram size={24} />
-              </a>
-            </div>
-          </div>
+        {/* Socials */}
+        <div className="mt-4 flex justify-center space-x-6">
+          <a
+            href="https://github.com/shomik-das"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-white transition-colors"
+          >
+            <FaGithub size={20} />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/shomikdas/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-white transition-colors"
+          >
+            <FaLinkedin size={20} />
+          </a>
+          <a
+            href="https://www.instagram.com/shomik_das/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-white transition-colors"
+          >
+            <FaInstagram size={20} />
+          </a>
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-gray-700 pt-4 text-center">
-          <p className="text-gray-500 m-0 pb-4 text-sm">
-            © {currentYear} CodeTogether. All rights reserved.
+        <div className="mt-8 border-t border-gray-700 pt-4 text-center">
+          <p className="text-xs text-gray-500">
+            © {new Date().getFullYear()} CodeTogether by Shomik Das. All rights reserved.
           </p>
         </div>
       </div>
     </footer>
-  );
-};
-
-export default Footer; 
+  )
+}

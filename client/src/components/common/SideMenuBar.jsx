@@ -66,12 +66,12 @@ const SideMenuBar = ({ onLogout }) => {
             <NavLink to="/my-room" className={navLinkClass}>
               My Rooms
             </NavLink>
-            <NavLink to="/contact" className={navLinkClass}>
+            {/* <NavLink to="/contact" className={navLinkClass}>
               Contact
             </NavLink>
             <NavLink to="/about" className={navLinkClass}>
               About
-            </NavLink>
+            </NavLink> */}
             <div className="border-b border-[#353542] my-5 mx-1"></div>
           </div>
 

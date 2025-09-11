@@ -55,7 +55,7 @@ const Navbar = () => {
           >
             My Rooms
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to="/contact"
             className={({ isActive }) =>
               `no-underline ${
@@ -74,7 +74,7 @@ const Navbar = () => {
             }
           >
             About
-          </NavLink>
+          </NavLink> */}
         </div>
 
         {/* Desktop Auth */}
