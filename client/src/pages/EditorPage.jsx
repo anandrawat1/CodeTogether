@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import toast from 'react-hot-toast';
-import { useNavigate, useParams, useLocation, Navigate } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 
 import Sidebar from '../components/features/Sidebar';
@@ -29,8 +29,22 @@ const EditorPage = () => {
     const [currentLanguage, setCurrentLanguage] = useState('javascript');
     const socketRef = useRef(null);
     const codeRef = useRef('');
-
-    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+    const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth <= 768);
+    
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+    
+        window.addEventListener('resize', handleResize);
+    
+        handleResize();
+    
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+    
 
     useEffect(() => {
         const socket = initSocket();
@@ -97,6 +111,22 @@ const EditorPage = () => {
             setSidebarContent(tab);
         }
     };
+//do not understand this code
+    const participants = useMemo(() => {
+        const map = {};
+        for (const c of clients) {
+            const name = c.username || c.name || '';
+            if (!name) continue;
+            const uid = Math.abs(Array.from(name).reduce((acc, ch) => acc + ch.charCodeAt(0), 0));
+            map[uid] = name;
+        }
+        // include current user too
+        if (username) {
+            const selfUid = Math.abs(Array.from(username).reduce((acc, ch) => acc + ch.charCodeAt(0), 0));
+            map[selfUid] = username;
+        }
+        return map;
+    }, [clients, username]);
 
     const renderSidebarComponent = (tab) => {
         switch (tab) {
@@ -109,7 +139,7 @@ const EditorPage = () => {
             case 'preview':
                 return <Preview code={currentCode} language={currentLanguage} />;
             case 'video':
-                return <VideoCall roomId={roomId} username={username} />;
+                return <VideoCall roomId={roomId} username={username} participants={participants} />;
             default:
                 return <Client clients={clients} currentUsername={username} roomId={roomId} socketRef={socketRef} />;
         }
