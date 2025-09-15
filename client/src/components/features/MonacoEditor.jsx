@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import Editor from '@monaco-editor/react';
 import { FiDownload, FiChevronDown } from 'react-icons/fi';
 import ACTIONS from '../../Actions';
+import { useSocket } from '../../context/SocketContext';
 
-const MonacoEditor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => {
+const MonacoEditor = ({ roomId, onCodeChange, onLanguageChange }) => {
   const [language, setLanguage] = useState('javascript');
   const [code, setCode] = useState('');
   const editorRef = useRef(null);
   const isRemoteUpdate = useRef(false); // Track if update is from remote
+  const { socketRef, socketReady } = useSocket();
 
   const languages = [
     { value: 'html', label: 'HTML' },
@@ -67,9 +69,11 @@ const MonacoEditor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => 
 
   // Set up socket listener for code changes
   useEffect(() => {
-    if (!socketRef.current) return;
+    console.log("inside useEffect of MonacoEditor: ",socketRef.current);
+    if (!socketReady || !socketRef.current) return;
 
     const handleCodeChange = ({ code: incomingCode }) => {
+      console.log('Received code change:')
       if (incomingCode !== null && incomingCode !== undefined) {
         isRemoteUpdate.current = true; // Mark as remote update
         setCode(incomingCode);
@@ -89,13 +93,13 @@ const MonacoEditor = ({ socketRef, roomId, onCodeChange, onLanguageChange }) => 
     return () => {
       socketRef.current.off(ACTIONS.CODE_CHANGE, handleCodeChange);
     };
-  }, [socketRef]); // Remove 'code' from dependencies
+  }, [socketRef, socketReady]);
 
   const handleEditorDidMount = (editor, monaco) => {
     editorRef.current = editor;
     
     // Request sync after editor mounts
-    if (socketRef.current) {
+    if (socketRef.current && socketReady) {
       socketRef.current.emit(ACTIONS.SYNC_CODE, {
         socketId: socketRef.current.id,
         roomId,

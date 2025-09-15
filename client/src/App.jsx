@@ -6,6 +6,7 @@ import Auth from './pages/AuthPage';
 import Home from './pages/HomePage';
 import ScrollToTop from './components/common/ScrollToTop';
 import MyRoom from './pages/MyRoomPage';
+import EditorPageWrapper from './pages/EditorPageWrapper';
 import './App.css';
 
 const App = () => {
@@ -16,9 +17,10 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/room" element={<Room />} />
         <Route path="/room/:roomId" element={<Room />} />
-        <Route path="/editor/:roomId" element={<EditorPage />} />
+        <Route path="/editor/:roomId" element={<EditorPageWrapper />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/my-room" element={<MyRoom />} />
+        <Route path="*" element={<Home />} />
       </Routes>
     </>
   );

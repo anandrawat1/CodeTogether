@@ -12,8 +12,8 @@ import Run from '../components/features/Run';
 import Preview from '../components/features/Preview';
 import VideoCall from '../components/features/VideoCall';
 
-import { initSocket } from '../initSocket';
 import ACTIONS from '../Actions';
+import { useSocket } from '../context/SocketContext';
 
 
 const EditorPage = () => {
@@ -27,10 +27,11 @@ const EditorPage = () => {
     const [activeMobileView, setActiveMobileView] = useState(null);
     const [currentCode, setCurrentCode] = useState('');
     const [currentLanguage, setCurrentLanguage] = useState('javascript');
-    const socketRef = useRef(null);
     const codeRef = useRef('');
     const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth <= 768);
-    
+    const { socketRef, socketReady } = useSocket();
+
+
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth <= 768);
@@ -47,17 +48,8 @@ const EditorPage = () => {
     
 
     useEffect(() => {
-        const socket = initSocket();
-        socketRef.current = socket;
-
-        socket.on('connect_error', handleError);
-        socket.on('connect_failed', handleError);
-
-        function handleError(err) {
-            console.error('Socket error:', err);
-            toast.error('Socket connection failed.');
-            navigate('/');
-        }
+        if (!socketReady || !socketRef.current) return;
+        const socket = socketRef.current;
 
         socket.emit(ACTIONS.JOIN, { roomId, username });
 
@@ -85,7 +77,7 @@ const EditorPage = () => {
             socket.disconnect();
             socket.off();
         };
-    }, [roomId, username, navigate]);
+    }, [roomId, username, navigate, socketReady, socketRef]);
 
 
     useEffect(() => {
@@ -103,14 +95,6 @@ const EditorPage = () => {
         setCurrentLanguage(language);
     };
 
-    const handleSidebarToggle = (tab) => {
-        if (isMobile) {
-            setActiveMobileView((prev) => (prev === tab ? null : tab));
-        }
-        else {
-            setSidebarContent(tab);
-        }
-    };
 //do not understand this code
     const participants = useMemo(() => {
         const map = {};
@@ -149,7 +133,6 @@ const EditorPage = () => {
         <div className="flex-1 md:hidden">
             {activeMobileView ? (renderSidebarComponent(activeMobileView)) : (
                 <MonacoEditor
-                    socketRef={socketRef}
                     roomId={roomId}
                     onCodeChange={handleCodeChange}
                     onLanguageChange={handleLanguageChange}
@@ -170,7 +153,6 @@ const EditorPage = () => {
                     <PanelResizeHandle className="w-1 bg-[#393E46] hover:bg-[#bbb8ff] transition-colors duration-200 cursor-col-resize" />
                     <Panel defaultSize={70}>
                         <MonacoEditor
-                            socketRef={socketRef}
                             roomId={roomId}
                             onCodeChange={handleCodeChange}
                             onLanguageChange={handleLanguageChange}
@@ -180,7 +162,6 @@ const EditorPage = () => {
             </div>
         );
     };
-
     return (
         <div className="flex h-screen pb-14 md:pb-0 overflow-hidden">
             <Sidebar setActiveMobileView={setActiveMobileView} setSidebarContent={setSidebarContent}/>
