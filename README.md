@@ -1,7 +1,5 @@
 # Code Together
 
-## Overview
-
 The **Real-Time Collaborative Code Editor** is an online platform that enables multiple users to code together in real time. Users can create a unique room ID for collaboration, write and edit code simultaneously, and execute it live. It provides a seamless coding experience with real-time interaction, making it ideal for team-based coding and coding interviews.
 
 ![Screenshot 1](Photos/1.png)
@@ -63,5 +61,6 @@ The **Real-Time Collaborative Code Editor** is an online platform that enables m
 ## Contributing
 
 Feel free to submit issues or pull requests to improve the project. Contributions are welcome!
+
 
 
