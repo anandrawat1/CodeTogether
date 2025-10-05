@@ -27,10 +27,8 @@ const EditorPage = () => {
     const [activeMobileView, setActiveMobileView] = useState(null);
     const [currentCode, setCurrentCode] = useState('');
     const [currentLanguage, setCurrentLanguage] = useState('javascript');
-    const codeRef = useRef('');
     const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth <= 768);
     const { socketRef, socketReady } = useSocket();
-
 
     useEffect(() => {
         const handleResize = () => {
@@ -87,7 +85,6 @@ const EditorPage = () => {
     }, [sidebarContent, roomId]);
 
     const handleCodeChange = (code) => {
-        codeRef.current = code;
         setCurrentCode(code);
     };
 
@@ -162,6 +159,9 @@ const EditorPage = () => {
             </div>
         );
     };
+    // if(!socketReady){
+    //     toast.loading("Connecting to the room... ", {duration: 1000});
+    // }
     return (
         <div className="flex h-screen pb-14 md:pb-0 overflow-hidden">
             <Sidebar setActiveMobileView={setActiveMobileView} setSidebarContent={setSidebarContent}/>

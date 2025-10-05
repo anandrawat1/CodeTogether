@@ -35,7 +35,7 @@ const auth = {
                 const JWT_SECRET = process.env.JWT_SECRET;
                 
                 const token = jwt.sign(payload, JWT_SECRET, {
-                    expiresIn: "2h",
+                    expiresIn: "3d",
                 })
     
                 user.token = token;

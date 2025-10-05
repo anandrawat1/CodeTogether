@@ -15,7 +15,7 @@ export const SocketProvider = ({ children }) => {
         socketRef.current = socket;
         function handleError(err) {
             console.error('Socket error:', err);
-            toast.error('Socket connection failed.');
+            toast.error("Something went wrong! Try again later.");
             navigate('/');
         }
 
