@@ -8,7 +8,14 @@ const Whiteboard = ({ roomId }) => {
 
   return (
     <div className="tldraw__editor h-full bg-[#101011]">
-      {store && <Tldraw store={store} inferDarkMode defaultName="Editor" deepLinks />}
+     {store && (
+    <Tldraw
+        store={store}
+        colorScheme="light"
+        initialTheme="default"
+        options={{ deepLinks: true }}
+    />
+)}
     </div>
   )
 }
