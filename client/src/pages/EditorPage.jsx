@@ -20,7 +20,7 @@ const EditorPage = () => {
     const { roomId } = useParams();
     const location = useLocation();
     const navigate = useNavigate();
-    const username = location.state?.username;
+    const username = location.state?.username || 'Guest';
 
     const [clients, setClients] = useState([]);
     const [sidebarContent, setSidebarContent] = useState('clients');
