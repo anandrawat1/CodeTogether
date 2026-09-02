@@ -7,7 +7,8 @@ const initializeSocket = require('./socket');
 const connectDB = require('./config/db');
 const roomRoutes = require('./routes/roomRoutes');
 const userRoutes = require('./routes/userRoutes');
-
+const agoraRoutes = require('./routes/agoraRoutes');
+const { RtcTokenBuilder, RtcRole } = require('agora-token');
 const app = express();
 
 app.use(cors({
@@ -29,6 +30,7 @@ app.use(express.json());
 // Routes
 app.use('/api/rooms', roomRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/agora', agoraRoutes);
 
 app.get('/', (req, res) => {
     res.send('Welcome to Code Together API');

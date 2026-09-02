@@ -10,6 +10,7 @@
   "author": "Shomik das",
   "license": "ISC",
   "dependencies": {
+    "agora-token": "^2.0.6",
     "axios": "^1.7.7",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
