@@ -119,8 +119,6 @@ const EditorPage = () => {
                 return <Run code={currentCode} language={currentLanguage} />;
             case 'preview':
                 return <Preview code={currentCode} language={currentLanguage} />;
-            case 'video':
-                return <VideoCall roomId={roomId} username={username} participants={participants} />;
             default:
                 return <Client clients={clients} currentUsername={username} roomId={roomId} socketRef={socketRef} />;
         }
@@ -163,11 +161,23 @@ const EditorPage = () => {
     //     toast.loading("Connecting to the room... ", {duration: 1000});
     // }
     return (
-        <div className="flex h-screen pb-14 md:pb-0 overflow-hidden">
-            <Sidebar setActiveMobileView={setActiveMobileView} setSidebarContent={setSidebarContent}/>
-            {isMobile ? renderMobileContent() : renderDesktopContent()}
+    <div className="flex h-screen pb-14 md:pb-0 overflow-hidden">
+        <Sidebar
+            setActiveMobileView={setActiveMobileView}
+            setSidebarContent={setSidebarContent}
+        />
+
+        {isMobile ? renderMobileContent() : renderDesktopContent()}
+
+        <div className="fixed bottom-4 right-4 w-80 h-64 z-50 shadow-2xl rounded-lg overflow-hidden">
+            <VideoCall
+                roomId={roomId}
+                username={username}
+                participants={participants}
+            />
         </div>
-    );
+    </div>
+);
 };
 
 export default EditorPage;
