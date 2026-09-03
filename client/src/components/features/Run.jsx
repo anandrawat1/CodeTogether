@@ -1,6 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useSocket } from "../../context/SocketContext";
 
 const Run = ({ code, language }) => {
+    const { roomId } = useParams();
+    const { socketRef, socketReady } = useSocket();
+
     const [input, setInput] = useState("");
     const [output, setOutput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -9,9 +14,58 @@ const Run = ({ code, language }) => {
     const BACKEND_URL =
         import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
+    // Receive Input and Output changes from other users
+    useEffect(() => {
+        if (!socketReady || !socketRef.current || !roomId) return;
+
+        const socket = socketRef.current;
+
+        const handleRemoteInput = ({ roomId: incomingRoomId, input: incomingInput }) => {
+            if (incomingRoomId !== roomId) return;
+
+            setInput(incomingInput ?? "");
+        };
+
+        const handleRemoteOutput = ({ roomId: incomingRoomId, output: incomingOutput }) => {
+            if (incomingRoomId !== roomId) return;
+
+            setOutput(incomingOutput ?? "");
+        };
+
+        socket.on("RUN_INPUT_CHANGE", handleRemoteInput);
+        socket.on("RUN_OUTPUT_CHANGE", handleRemoteOutput);
+
+        return () => {
+            socket.off("RUN_INPUT_CHANGE", handleRemoteInput);
+            socket.off("RUN_OUTPUT_CHANGE", handleRemoteOutput);
+        };
+    }, [roomId, socketReady, socketRef]);
+
+    // Input change
+    const handleInputChange = (e) => {
+        const newInput = e.target.value;
+
+        setInput(newInput);
+
+        if (socketReady && socketRef.current && roomId) {
+            socketRef.current.emit("RUN_INPUT_CHANGE", {
+                roomId,
+                input: newInput,
+            });
+        }
+    };
+
     const compileAndRun = async () => {
         if (!code) {
             setOutput("Please enter some code first.");
+
+            if (socketReady && socketRef.current && roomId) {
+                socketRef.current.emit("RUN_OUTPUT_CHANGE", {
+                    roomId,
+                    output: "Please enter some code first.",
+                });
+            }
+
             return;
         }
 
@@ -42,10 +96,33 @@ const Run = ({ code, language }) => {
                 );
             }
 
-            setOutput(result?.output || "No output");
+            const newOutput = result?.output || "No output";
+
+            setOutput(newOutput);
+
+            // Share output with everyone in the room
+            if (socketReady && socketRef.current && roomId) {
+                socketRef.current.emit("RUN_OUTPUT_CHANGE", {
+                    roomId,
+                    output: newOutput,
+                });
+            }
         } catch (error) {
             console.error("Code execution error:", error);
-            setOutput(`Error: ${error?.message || "Failed to execute code"}`);
+
+            const errorOutput = `Error: ${
+                error?.message || "Failed to execute code"
+            }`;
+
+            setOutput(errorOutput);
+
+            // Share error output with everyone
+            if (socketReady && socketRef.current && roomId) {
+                socketRef.current.emit("RUN_OUTPUT_CHANGE", {
+                    roomId,
+                    output: errorOutput,
+                });
+            }
         } finally {
             setIsLoading(false);
         }
@@ -53,7 +130,6 @@ const Run = ({ code, language }) => {
 
     return (
         <div className="h-full flex flex-col bg-[#1e1e1e] text-white overflow-hidden">
-
             <div className="flex-1 flex flex-col p-2 overflow-y-auto custom-scrollbar">
 
                 <div className="flex-1">
@@ -63,7 +139,7 @@ const Run = ({ code, language }) => {
 
                     <textarea
                         value={input}
-                        onChange={(e) => setInput(e.target.value)}
+                        onChange={handleInputChange}
                         className="w-full h-full bg-[#393E46] text-white rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#bbb8ff] resize-none"
                         placeholder="Enter input here..."
                     />
