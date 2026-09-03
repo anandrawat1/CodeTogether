@@ -5,53 +5,47 @@ const Run = ({ code, language }) => {
     const [output, setOutput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    const API_KEY = import.meta.env.VITE_CODE_COMPILE_API_KEY;
-    const API_HOST = import.meta.env.VITE_CODE_COMPILE_API_HOST;
-    const API_URL = `https://${API_HOST}`;
-
-    const languageIds = {
-        javascript: 63,
-        python: 71,
-        java: 62,
-        cpp: 54,
-    };
-
-    const headers = {
-        "content-type": "application/json",
-        "X-RapidAPI-Key": API_KEY,
-        "X-RapidAPI-Host": API_HOST,
-    };
+    // Backend URL
+    const BACKEND_URL =
+        import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
     const compileAndRun = async () => {
-        if (!code) return setOutput("Please enter some code first.");
+        if (!code) {
+            setOutput("Please enter some code first.");
+            return;
+        }
 
         setIsLoading(true);
+        setOutput("");
+
         try {
-            const res = await fetch(`${API_URL}/submissions`, {
-                method: "POST",
-                headers,
-                body: JSON.stringify({
-                    language_id: languageIds[language],
-                    source_code: code,
-                    stdin: input,
-                }),
-            });
+            const response = await fetch(
+                `${BACKEND_URL}/api/execute`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        code: code,
+                        language: language,
+                        stdin: input,
+                    }),
+                }
+            );
 
-            const { token } = await res.json();
-            if (!token) throw new Error("Failed to receive submission token.");
+            const result = await response.json();
 
-            let attempts = 0, result;
-            while (attempts < 10) {
-                await new Promise((r) => setTimeout(r, 2000));
-                const response = await fetch(`${API_URL}/submissions/${token}`, { headers });
-                result = await response.json();
-                if (result.status?.id > 2) break;
-                attempts++;
+            if (!response.ok) {
+                throw new Error(
+                    result?.message || "Code execution failed."
+                );
             }
 
-            setOutput(result.compile_output || result.stderr || result.stdout || "No output");
+            setOutput(result?.output || "No output");
         } catch (error) {
-            setOutput(`Error: ${error.message}`);
+            console.error("Code execution error:", error);
+            setOutput(`Error: ${error?.message || "Failed to execute code"}`);
         } finally {
             setIsLoading(false);
         }
@@ -59,13 +53,14 @@ const Run = ({ code, language }) => {
 
     return (
         <div className="h-full flex flex-col bg-[#1e1e1e] text-white overflow-hidden">
-            {/* <div className="p-2 flex-shrink-0">
-                <p className=" text-lg text-[#bbb8ff] mb-0">Run Code</p>
-            </div> */}
 
             <div className="flex-1 flex flex-col p-2 overflow-y-auto custom-scrollbar">
+
                 <div className="flex-1">
-                    <label className="block text-sm font-medium mb-2">Input</label>
+                    <label className="block text-sm font-medium mb-2">
+                        Input
+                    </label>
+
                     <textarea
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
@@ -73,22 +68,29 @@ const Run = ({ code, language }) => {
                         placeholder="Enter input here..."
                     />
                 </div>
-                
 
                 <div className="flex-1 mt-10 mb-10">
-                    <label className="block text-sm font-medium mb-2">Output</label>
+                    <label className="block text-sm font-medium mb-2">
+                        Output
+                    </label>
+
                     <div className="w-full h-full min-h-[100px] bg-[#393E46] text-white rounded px-3 py-2 overflow-y-auto whitespace-pre-wrap font-mono">
                         {output || "Output will appear here..."}
                     </div>
                 </div>
+
                 <button
-                    className={`w-full bg-[#bbb8ff] text-black hover:bg-[#aaaaff] py-2.5 rounded transition-colors font-medium mt-2 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+                    className={`w-full bg-[#bbb8ff] text-black hover:bg-[#aaaaff] py-2.5 rounded transition-colors font-medium mt-2 ${
+                        isLoading
+                            ? "opacity-50 cursor-not-allowed"
+                            : ""
+                    }`}
                     onClick={compileAndRun}
                     disabled={isLoading}
                 >
                     {isLoading ? "Running..." : "Run Code"}
                 </button>
-                
+
             </div>
         </div>
     );
