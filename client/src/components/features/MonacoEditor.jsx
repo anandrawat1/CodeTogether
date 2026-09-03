@@ -1,14 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react';
+
 import Editor from '@monaco-editor/react';
+
 import { FiDownload, FiChevronDown } from 'react-icons/fi';
+
 import ACTIONS from '../../Actions';
+
 import { useSocket } from '../../context/SocketContext';
 
 const MonacoEditor = ({ roomId, onCodeChange, onLanguageChange }) => {
   const [language, setLanguage] = useState('javascript');
   const [code, setCode] = useState('');
+
   const editorRef = useRef(null);
   const isRemoteUpdate = useRef(false);
+
+  // Keep the latest callback without causing the socket effect
+  // to run again and again.
+  const onCodeChangeRef = useRef(onCodeChange);
+
+  useEffect(() => {
+    onCodeChangeRef.current = onCodeChange;
+  }, [onCodeChange]);
+
   const { socketRef, socketReady } = useSocket();
 
   const languages = [
@@ -23,14 +37,19 @@ const MonacoEditor = ({ roomId, onCodeChange, onLanguageChange }) => {
     switch (lang) {
       case 'html':
         return 'html';
+
       case 'javascript':
         return 'javascript';
+
       case 'python':
         return 'python';
+
       case 'java':
         return 'java';
+
       case 'cpp':
         return 'cpp';
+
       default:
         return 'javascript';
     }
@@ -50,88 +69,149 @@ const MonacoEditor = ({ roomId, onCodeChange, onLanguageChange }) => {
 
   const handleDownload = () => {
     const extension = getFileExtension(language);
-    const blob = new Blob([code], { type: 'text/plain' });
+
+    const blob = new Blob([code], {
+      type: 'text/plain',
+    });
+
     const url = window.URL.createObjectURL(blob);
 
     const a = document.createElement('a');
+
     a.href = url;
     a.download = `code${extension}`;
 
     document.body.appendChild(a);
+
     a.click();
+
     document.body.removeChild(a);
 
     window.URL.revokeObjectURL(url);
   };
 
-  // Load saved code from localStorage on mount
+  // Load saved code from localStorage
   useEffect(() => {
     const savedCode = localStorage.getItem(`code-${roomId}`);
 
     if (savedCode !== null) {
       setCode(savedCode);
 
-      // IMPORTANT:
-      // Send saved code to EditorPage so Run.jsx also gets it.
-      onCodeChange?.(savedCode);
-    }
-  }, [roomId, onCodeChange]);
+      onCodeChangeRef.current?.(savedCode);
 
-  // Save code to localStorage whenever it changes
+      if (editorRef.current) {
+        const editor = editorRef.current;
+
+        const currentValue = editor.getValue();
+
+        if (currentValue !== savedCode) {
+          isRemoteUpdate.current = true;
+
+          const model = editor.getModel();
+
+          if (model) {
+            editor.executeEdits('local-storage-update', [
+              {
+                range: model.getFullModelRange(),
+                text: savedCode,
+              },
+            ]);
+          }
+
+          isRemoteUpdate.current = false;
+        }
+      }
+    }
+  }, [roomId]);
+
+  // Save code to localStorage
   useEffect(() => {
     localStorage.setItem(`code-${roomId}`, code);
   }, [code, roomId]);
 
-  // Set up socket listener for code changes
+  // Socket listener
+  // IMPORTANT: this effect does NOT depend on onCodeChange.
   useEffect(() => {
-    console.log(
-      "inside useEffect of MonacoEditor:",
-      socketRef.current
-    );
+    if (!socketReady || !socketRef.current) {
+      return;
+    }
 
-    if (!socketReady || !socketRef.current) return;
+    const socket = socketRef.current;
 
     const handleCodeChange = ({ code: incomingCode }) => {
-      console.log('Received code change:', incomingCode);
+      if (incomingCode === null || incomingCode === undefined) {
+        return;
+      }
 
-      if (incomingCode !== null && incomingCode !== undefined) {
-        isRemoteUpdate.current = true;
+      const editor = editorRef.current;
 
+      // If Monaco is not mounted yet,
+      // only update React state.
+      if (!editor) {
         setCode(incomingCode);
 
-        // IMPORTANT:
-        // Also update EditorPage's currentCode.
-        onCodeChange?.(incomingCode);
+        onCodeChangeRef.current?.(incomingCode);
 
-        // Update the editor directly if it exists
-        if (editorRef.current) {
-          const currentValue = editorRef.current.getValue();
-
-          if (currentValue !== incomingCode) {
-            editorRef.current.setValue(incomingCode);
-          }
-        }
+        return;
       }
+
+      const currentValue = editor.getValue();
+
+      // VERY IMPORTANT:
+      // If both values are already identical,
+      // don't touch Monaco at all.
+      if (currentValue === incomingCode) {
+        return;
+      }
+
+      // Save cursor and selection.
+      const position = editor.getPosition();
+      const selections = editor.getSelections();
+
+      isRemoteUpdate.current = true;
+
+      const model = editor.getModel();
+
+      if (model) {
+        editor.executeEdits('remote-update', [
+          {
+            range: model.getFullModelRange(),
+            text: incomingCode,
+          },
+        ]);
+      }
+
+      setCode(incomingCode);
+
+      onCodeChangeRef.current?.(incomingCode);
+
+      // Restore cursor/selection after remote update.
+      if (selections && selections.length > 0) {
+        editor.setSelections(selections);
+      } else if (position) {
+        editor.setPosition(position);
+      }
+
+      isRemoteUpdate.current = false;
     };
 
-    socketRef.current.on(ACTIONS.CODE_CHANGE, handleCodeChange);
+    socket.on(ACTIONS.CODE_CHANGE, handleCodeChange);
 
     return () => {
-      socketRef.current.off(ACTIONS.CODE_CHANGE, handleCodeChange);
+      socket.off(ACTIONS.CODE_CHANGE, handleCodeChange);
     };
-  }, [socketRef, socketReady, onCodeChange]);
+  }, [socketReady, socketRef]);
 
-  const handleEditorDidMount = (editor, monaco) => {
+  const handleEditorDidMount = (editor) => {
     editorRef.current = editor;
 
-    // IMPORTANT:
-    // Send the current editor value to EditorPage.
     const currentValue = editor.getValue();
 
     setCode(currentValue);
-    onCodeChange?.(currentValue);
 
-    // Request sync after editor mounts
+    onCodeChangeRef.current?.(currentValue);
+
+    // Request latest code from server.
     if (socketRef.current && socketReady) {
       socketRef.current.emit(ACTIONS.SYNC_CODE, {
         socketId: socketRef.current.id,
@@ -141,9 +221,8 @@ const MonacoEditor = ({ roomId, onCodeChange, onLanguageChange }) => {
   };
 
   const handleEditorChange = (value) => {
-    // Check if this is a remote update
+    // Ignore changes generated by remote socket updates.
     if (isRemoteUpdate.current) {
-      isRemoteUpdate.current = false;
       return;
     }
 
@@ -151,11 +230,10 @@ const MonacoEditor = ({ roomId, onCodeChange, onLanguageChange }) => {
 
     setCode(newCode);
 
-    // Send code to EditorPage
-    onCodeChange?.(newCode);
+    onCodeChangeRef.current?.(newCode);
 
-    // Only emit if we have a socket connection
-    if (socketRef.current) {
+    // Send local changes to other users.
+    if (socketRef.current && socketReady) {
       socketRef.current.emit(ACTIONS.CODE_CHANGE, {
         roomId,
         code: newCode,
@@ -167,16 +245,14 @@ const MonacoEditor = ({ roomId, onCodeChange, onLanguageChange }) => {
     const newLang = e.target.value;
 
     setLanguage(newLang);
+
     onLanguageChange?.(newLang);
   };
 
   return (
     <div className="flex flex-col h-full bg-[#1e1e1e] min-w-0">
-
       <div className="flex items-center justify-between p-2 bg-[#1e1e1e] border-b border-[#333]">
-
         <div className="relative inline-block">
-
           <select
             value={language}
             onChange={handleLanguageChange}
@@ -196,7 +272,6 @@ const MonacoEditor = ({ roomId, onCodeChange, onLanguageChange }) => {
           <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white">
             <FiChevronDown className="h-4 w-4" />
           </div>
-
         </div>
 
         <span className="text-[#bbb8ff] text-lg">
@@ -210,32 +285,36 @@ const MonacoEditor = ({ roomId, onCodeChange, onLanguageChange }) => {
           <FiDownload className="h-4 w-4" />
           Download
         </button>
-
       </div>
 
       <div className="flex-1 h-[calc(100vh-6rem)] relative">
-
         <Editor
           height="100%"
           width="100%"
           theme="vs-dark"
           language={getMonacoLang(language)}
-          value={code}
+          defaultValue={code}
           onChange={handleEditorChange}
           onMount={handleEditorDidMount}
           options={{
             fontSize: 16,
-            minimap: { enabled: false },
+
+            minimap: {
+              enabled: false,
+            },
+
             automaticLayout: true,
+
             scrollBeyondLastLine: false,
+
             wordWrap: 'off',
+
             smoothScrolling: true,
+
             lineNumbers: 'on',
           }}
         />
-
       </div>
-
     </div>
   );
 };
