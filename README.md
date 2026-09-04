@@ -1,67 +1,71 @@
-# Code Together
+# CodeTogether 🚀
 
-The **Real-Time Collaborative Code Editor** is an online platform that enables multiple users to code together in real time. Users can create a unique room ID for collaboration, write and edit code simultaneously, and execute it live. It provides a seamless coding experience with real-time interaction, making it ideal for team-based coding and coding interviews.
+> A real-time collaborative code editor that enables developers to code, communicate, and collaborate together in one shared workspace.
 
-![Screenshot 1](Photos/1.png)
-![Screenshot 2](Photos/2.png)
-![Screenshot 3](Photos/3.png)
-![Screenshot 4](Photos/4.png)
-![Screenshot 5](Photos/5.png)
+CodeTogether is a full-stack collaborative coding platform where multiple users can join a unique room, edit code in real time, communicate through chat and calls, and execute code together.
 
-## Features
+## ✨ Features
 
-- **Authentication** – Users can log in or sign up to access additional features; however, creating and joining rooms is allowed without logging in.
-- **Room History** – Logged-in users can view the history of rooms they have created or joined.
-- **Unique Room Creation** – Users can create unique rooms for collaboration.
-- **Real-Time Code Editing** – Multiple users can edit the same code in real time.
-- **Syntax Highlighting & Auto-Suggestions** – Enhances coding efficiency.
-- **Live Group Chat** – Seamless communication within the room.
-- **Code Compilation & Execution** – Supports live execution of code.
-- **Real-Time Group Calls** – Allows audio/video calls for discussion.
-- **Collaborative Drawing** – A shared whiteboard for brainstorming.
-- **Preview Feature** – Users can preview their code output in real-time.
-- **Download Code File** – Users can download their code file easily.
-- **Multiple Language Support** – Users can write, compile, and execute code in various programming languages.
+- 🔐 **Authentication** — User sign up and login functionality
+- 🏠 **Unique Rooms** — Create and join collaborative coding rooms
+- ⚡ **Real-Time Code Editing** — Multiple users can edit the same code simultaneously
+- 🎨 **Syntax Highlighting & Auto Suggestions** — Improved coding experience
+- 💬 **Live Group Chat** — Communicate with other users inside the room
+- ▶️ **Code Execution** — Execute code directly from the collaborative editor
+- 📹 **Real-Time Group Video Calls** — Communicate with other participants through live video calls
+- 📜 **Room History** — View previously created or joined rooms
+- 🌐 **Live Deployment** — Accessible through a public web application
 
-## Tech Stack
+## 🖥️ Screenshots
 
-- **Frontend:** React.js
-- **Backend:** Node.js, Express.js
-- **Database:** MongoDB with Mongoose
-- **Real-Time Communication:** Socket.io
-- **Code Compilation:** Judge0 API
-- **Code Editor:** Monaco
-- **Whiteboard:** Tldraw
+### Collaborative Coding Environment
 
+![CodeTogether](Photos/1.png)
 
-## Sequence Diagram
-![Screenshot 5](Photos/8.png)
+### Real-Time Collaboration
 
+![CodeTogether](Photos/2.png)
 
-## Installation & Setup
+### Group Communication
 
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/velocitykaran/CodeTogether.git
-   cd CodeTogether
-   ```
-2. Run the frontend:
-   ```sh
-   cd client
-   npm install
-   npm run dev
-   ```
-4. Run the backend:
-   ```sh
-   cd ../server
-   npm install
-   npm run dev
-   ```
+![CodeTogether](Photos/3.png)
 
-## Contributing
+### Code Execution
 
-Feel free to submit issues or pull requests to improve the project. Contributions are welcome!
+![CodeTogether](Photos/4.png)
 
+### Collaborative Workspace
 
+![CodeTogether](Photos/5.png)
 
+## 🛠️ Tech Stack
 
+### Frontend
+- React.js
+- JavaScript
+- HTML5
+- CSS3
+
+### Backend
+- Node.js
+- Express.js
+
+### Database
+- MongoDB
+- MongoDB Atlas
+
+### Real-Time Communication
+- Socket.IO
+- Agora
+
+### Deployment
+- Render
+
+## 🏗️ Project Structure
+
+```text
+CodeTogether/
+├── client/     # React frontend
+├── server/     # Node.js + Express backend
+├── Photos/     # Project screenshots
+└── README.md
