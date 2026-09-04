@@ -1,4 +1,4 @@
-import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa"
+import { FaGithub, FaLinkedin } from "react-icons/fa"
 
 export default function Footer() {
   return (
@@ -25,20 +25,12 @@ export default function Footer() {
             <FaGithub size={20} />
           </a>
           <a
-            href="https://www.linkedin.com/in/shomikdas/"
+            href="https://www.linkedin.com/in/karan-raj-2b694b27a/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-400 hover:text-white transition-colors"
           >
             <FaLinkedin size={20} />
-          </a>
-          <a
-            href="https://www.instagram.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            <FaInstagram size={20} />
           </a>
         </div>
 
@@ -52,4 +44,5 @@ export default function Footer() {
     </footer>
   )
 }
+
 
