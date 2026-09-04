@@ -42,7 +42,7 @@ The **Real-Time Collaborative Code Editor** is an online platform that enables m
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/shomik-das/CodeTogether.git
+   git clone https://github.com/velocitykaran/CodeTogether.git
    cd CodeTogether
    ```
 2. Run the frontend:
@@ -61,6 +61,7 @@ The **Real-Time Collaborative Code Editor** is an online platform that enables m
 ## Contributing
 
 Feel free to submit issues or pull requests to improve the project. Contributions are welcome!
+
 
 
 

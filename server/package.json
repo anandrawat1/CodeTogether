@@ -7,7 +7,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
-  "author": "Shomik das",
+  "author": "Karan Raj",
   "license": "ISC",
   "dependencies": {
     "agora-token": "^2.0.6",
@@ -25,3 +25,4 @@
     "socket.io-client": "^4.7.2"
   }
 }
+

@@ -17,7 +17,7 @@ export default function Footer() {
         {/* Socials */}
         <div className="mt-4 flex justify-center space-x-6">
           <a
-            href="https://github.com/shomik-das"
+            href="https://github.com/velocitykaran"
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-400 hover:text-white transition-colors"
@@ -33,7 +33,7 @@ export default function Footer() {
             <FaLinkedin size={20} />
           </a>
           <a
-            href="https://www.instagram.com/shomik_das/"
+            href="https://www.instagram.com/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-400 hover:text-white transition-colors"
@@ -45,10 +45,11 @@ export default function Footer() {
         {/* Copyright */}
         <div className="mt-8 border-t border-gray-700 pt-4 text-center">
           <p className="text-xs text-gray-500">
-            © {new Date().getFullYear()} CodeTogether by Shomik Das. All rights reserved.
+            © {new Date().getFullYear()} CodeTogether by Karan Raj. All rights reserved.
           </p>
         </div>
       </div>
     </footer>
   )
 }
+
