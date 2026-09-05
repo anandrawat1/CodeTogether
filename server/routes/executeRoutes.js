@@ -3,6 +3,13 @@ const axios = require("axios");
 
 const router = express.Router();
 
+const compilerMap = {
+    cpp: "gcc-head",
+    java: "openjdk-head",
+    python: "cpython-head",
+    javascript: "nodejs-head"
+};
+
 router.post("/", async (req, res) => {
     try {
         const { code, language, stdin } = req.body;
@@ -10,61 +17,43 @@ router.post("/", async (req, res) => {
         if (!code || !language) {
             return res.status(400).json({
                 success: false,
-                message: "Code and language are required",
+                message: "Code and language are required"
             });
         }
 
-        // Get available compilers from Wandbox
-        const compilerList = await axios.get(
-            "https://wandbox.org/api/list.json"
-        );
-
-        const compilers = compilerList.data;
-
-        const languageMap = {
-            cpp: "C++",
-            java: "Java",
-            python: "Python",
-            javascript: "JavaScript",
-        };
-
-        const targetLanguage = languageMap[language.toLowerCase()];
-
-        if (!targetLanguage) {
-            return res.status(400).json({
-                success: false,
-                message: `Unsupported language: ${language}`,
-            });
-        }
-
-        // Find a compiler for requested language
-        const compiler = compilers.find(
-            (item) => item.language === targetLanguage
-        );
+        const lang = language.toLowerCase();
+        const compiler = compilerMap[lang];
 
         if (!compiler) {
             return res.status(400).json({
                 success: false,
-                message: `No compiler found for ${targetLanguage}`,
+                message: `Unsupported language: ${language}`
             });
         }
 
-        // Send code to Wandbox
+        console.log("Executing:", {
+            language: lang,
+            compiler: compiler
+        });
+
         const response = await axios.post(
             "https://wandbox.org/api/compile.json",
             {
-                code,
-                compiler: compiler.name,
-                stdin: stdin || "",
+                code: code,
+                compiler: compiler,
+                stdin: stdin || ""
             },
             {
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/json"
                 },
+                timeout: 30000
             }
         );
 
         const result = response.data;
+
+        console.log("Wandbox response:", result);
 
         res.json({
             success: true,
@@ -73,9 +62,11 @@ router.post("/", async (req, res) => {
                 result.program_message ||
                 result.compiler_error ||
                 result.compiler_message ||
-                "No output",
+                "No output"
         });
+
     } catch (error) {
+
         console.error(
             "Code execution error:",
             error.response?.data || error.message
@@ -84,7 +75,7 @@ router.post("/", async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Code execution failed",
-            error: error.response?.data || error.message,
+            error: error.response?.data || error.message
         });
     }
 });
