@@ -372,7 +372,12 @@ const VideoCall = ({ roomId, username, participants = {} }) => {
             if (joinedRef.current) {
                 try {
                     await client.leave();
-                } catch (_) {}
+                } catch (_) {
+                    console.error(
+                        'Error leaving after failed join:',
+                        _
+                    );
+                }
             }
 
             joinedRef.current = false;
@@ -432,11 +437,21 @@ const VideoCall = ({ roomId, username, participants = {} }) => {
             tracks.forEach((track) => {
                 try {
                     track.stop();
-                } catch (_) {}
+                } catch (_) {
+                    console.error(
+                        'Error stopping track:',
+                        _
+                    );
+                }
 
                 try {
                     track.close();
-                } catch (_) {}
+                } catch (_) {
+                    console.error(
+                        'Error closing track:',
+                        _
+                    );
+                }
             });
 
             if (joinedRef.current) {
@@ -481,17 +496,32 @@ const VideoCall = ({ roomId, username, participants = {} }) => {
                     if (tracks.length > 0) {
                         try {
                             await client.unpublish(tracks);
-                        } catch (_) {}
+                        } catch (_) {
+                            console.error(
+                                'Error unpublishing tracks:',
+                                _
+                            );
+                        }
                     }
 
                     tracks.forEach((track) => {
                         try {
                             track.stop();
-                        } catch (_) {}
+                        } catch (_) {
+                            console.error(
+                                'Error stopping track:',
+                                _
+                            );
+                        }
 
                         try {
                             track.close();
-                        } catch (_) {}
+                        } catch (_) {
+                            console.error(
+                                'Error closing track:',
+                                _
+                            );
+                        }
                     });
 
                     if (joinedRef.current) {
