@@ -4,7 +4,6 @@ import { useSyncDemo } from "@tldraw/sync";
 import "tldraw/tldraw.css";
 
 const Whiteboard = ({ roomId }) => {
-    // Room ID nahi hai to error screen dikhao
     if (!roomId) {
         return (
             <div className="w-full h-full flex items-center justify-center bg-[#101011] text-white">
@@ -13,7 +12,6 @@ const Whiteboard = ({ roomId }) => {
         );
     }
 
-    // Unique room ID for tldraw
     const store = useSyncDemo({
         roomId: `codetogether-${roomId}`,
     });
@@ -28,6 +26,7 @@ const Whiteboard = ({ roomId }) => {
         >
             <Tldraw
                 store={store}
+                licenseKey={import.meta.env.VITE_TLDRAW_LICENSE_KEY}
                 colorScheme="light"
                 options={{
                     deepLinks: true,
