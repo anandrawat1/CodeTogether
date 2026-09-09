@@ -16,7 +16,9 @@ const app = express();
 
 // Allow deployed frontend and any localhost port
 const allowedOrigins = [
-    process.env.CLIENT_URL
+    process.env.CLIENT_URL,
+    'https://code-together-iota.vercel.app',
+    'https://code-together-5cyxahy8n-anandrawat1s-projects.vercel.app'
 ].filter(Boolean);
 
 app.use(cors({
