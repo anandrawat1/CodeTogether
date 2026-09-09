@@ -1,23 +1,40 @@
-import React from 'react'
-import { Tldraw } from 'tldraw'
-import { useSyncDemo } from '@tldraw/sync'
-import 'tldraw/tldraw.css'
+import React from "react";
+import { Tldraw } from "tldraw";
+import { useSyncDemo } from "@tldraw/sync";
+import "tldraw/tldraw.css";
 
 const Whiteboard = ({ roomId }) => {
-  const store = useSyncDemo({ roomId })
+    // Room ID nahi hai to error screen dikhao
+    if (!roomId) {
+        return (
+            <div className="w-full h-full flex items-center justify-center bg-[#101011] text-white">
+                Room ID is missing.
+            </div>
+        );
+    }
 
-  return (
-    <div className="tldraw__editor h-full bg-[#101011]">
-     {store && (
-    <Tldraw
-        store={store}
-        colorScheme="light"
-        initialTheme="default"
-        options={{ deepLinks: true }}
-    />
-)}
-    </div>
-  )
-}
+    // Unique room ID for tldraw
+    const store = useSyncDemo({
+        roomId: `codetogether-${roomId}`,
+    });
 
-export default Whiteboard
+    return (
+        <div
+            className="w-full h-full"
+            style={{
+                position: "relative",
+                minHeight: "500px",
+            }}
+        >
+            <Tldraw
+                store={store}
+                colorScheme="light"
+                options={{
+                    deepLinks: true,
+                }}
+            />
+        </div>
+    );
+};
+
+export default Whiteboard;
