@@ -16,6 +16,35 @@ const roomSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    files: [
+    {
+        id: {
+            type: String,
+            required: true
+        },
+        name: {
+            type: String,
+            required: true
+        },
+        type: {
+            type: String,
+            enum: ['file', 'folder'],
+            required: true
+        },
+        parentId: {
+            type: String,
+            default: null
+        },
+        content: {
+            type: String,
+            default: ''
+        },
+        language: {
+            type: String,
+            default: 'javascript'
+        }
+    }
+],
     users: [{
         type: String
     }],

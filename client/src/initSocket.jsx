@@ -2,6 +2,8 @@ import { io } from 'socket.io-client';
 
 export const initSocket = () => {
     const backendURL = import.meta.env.VITE_BACKEND_URL;
+    console.log("🔗 BACKEND URL:", backendURL);
+
     if (!backendURL) {
         console.error("VITE_BACKEND_URL is not defined!");
         throw new Error("Backend URL missing! Check your .env file.");

@@ -1,319 +1,251 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
+import { Editor } from "@monaco-editor/react";
+import ACTIONS from "../../Actions";
+import { useSocket } from "../../context/SocketContext";
 
-import Editor from '@monaco-editor/react';
-
-import { FiDownload, FiChevronDown } from 'react-icons/fi';
-
-import ACTIONS from '../../Actions';
-
-import { useSocket } from '../../context/SocketContext';
-
-const MonacoEditor = ({ roomId, onCodeChange, onLanguageChange }) => {
-  const [language, setLanguage] = useState('javascript');
-  const [code, setCode] = useState('');
-
+const MonacoEditor = ({
+  roomId,
+  activeFile,
+  onCodeChange,
+  onLanguageChange,
+}) => {
+  const { socketRef } = useSocket();
   const editorRef = useRef(null);
   const isRemoteUpdate = useRef(false);
 
-  // Keep the latest callback without causing the socket effect
-  // to run again and again.
-  const onCodeChangeRef = useRef(onCodeChange);
+  const [code, setCode] = useState("");
+  const [language, setLanguage] = useState("javascript");
+
+  /*
+   * -----------------------------------------
+   * Load active file
+   * -----------------------------------------
+   */
 
   useEffect(() => {
-    onCodeChangeRef.current = onCodeChange;
-  }, [onCodeChange]);
-
-  const { socketRef, socketReady } = useSocket();
-
-  const languages = [
-    { value: 'html', label: 'HTML' },
-    { value: 'javascript', label: 'JavaScript' },
-    { value: 'python', label: 'Python' },
-    { value: 'java', label: 'Java' },
-    { value: 'cpp', label: 'C++' },
-  ];
-
-  const getMonacoLang = (lang) => {
-    switch (lang) {
-      case 'html':
-        return 'html';
-
-      case 'javascript':
-        return 'javascript';
-
-      case 'python':
-        return 'python';
-
-      case 'java':
-        return 'java';
-
-      case 'cpp':
-        return 'cpp';
-
-      default:
-        return 'javascript';
-    }
-  };
-
-  const getFileExtension = (lang) => {
-    const extensions = {
-      javascript: '.js',
-      python: '.py',
-      java: '.java',
-      cpp: '.cpp',
-      html: '.html',
-    };
-
-    return extensions[lang] || '.txt';
-  };
-
-  const handleDownload = () => {
-    const extension = getFileExtension(language);
-
-    const blob = new Blob([code], {
-      type: 'text/plain',
-    });
-
-    const url = window.URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-
-    a.href = url;
-    a.download = `code${extension}`;
-
-    document.body.appendChild(a);
-
-    a.click();
-
-    document.body.removeChild(a);
-
-    window.URL.revokeObjectURL(url);
-  };
-
-  // Load saved code from localStorage
-  useEffect(() => {
-    const savedCode = localStorage.getItem(`code-${roomId}`);
-
-    if (savedCode !== null) {
-      setCode(savedCode);
-
-      onCodeChangeRef.current?.(savedCode);
-
-      if (editorRef.current) {
-        const editor = editorRef.current;
-
-        const currentValue = editor.getValue();
-
-        if (currentValue !== savedCode) {
-          isRemoteUpdate.current = true;
-
-          const model = editor.getModel();
-
-          if (model) {
-            editor.executeEdits('local-storage-update', [
-              {
-                range: model.getFullModelRange(),
-                text: savedCode,
-              },
-            ]);
-          }
-
-          isRemoteUpdate.current = false;
-        }
-      }
-    }
-  }, [roomId]);
-
-  // Save code to localStorage
-  useEffect(() => {
-    localStorage.setItem(`code-${roomId}`, code);
-  }, [code, roomId]);
-
-  // Socket listener
-  // IMPORTANT: this effect does NOT depend on onCodeChange.
-  useEffect(() => {
-    if (!socketReady || !socketRef.current) {
+    if (!activeFile) {
+      setCode("");
+      setLanguage("javascript");
       return;
     }
 
+    isRemoteUpdate.current = true;
+
+    setCode(activeFile.content || "");
+    setLanguage(activeFile.language || "javascript");
+
+    onCodeChange?.(activeFile.content || "");
+
+    onLanguageChange?.(activeFile.language || "javascript");
+
+    setTimeout(() => {
+      isRemoteUpdate.current = false;
+    }, 0);
+  }, [activeFile?.id, activeFile?.content, activeFile?.language]);
+
+  /*
+   * -----------------------------------------
+   * Editor mount
+   * -----------------------------------------
+   */
+  useEffect(() => {
     const socket = socketRef.current;
 
-    const handleCodeChange = ({ code: incomingCode }) => {
-      if (incomingCode === null || incomingCode === undefined) {
+    if (!socket) {
+      return;
+    }
+
+    const handleRemoteFileChange = ({ fileId, content, language }) => {
+      if (!activeFile || fileId !== activeFile.id) {
         return;
       }
-
-      const editor = editorRef.current;
-
-      // If Monaco is not mounted yet,
-      // only update React state.
-      if (!editor) {
-        setCode(incomingCode);
-
-        onCodeChangeRef.current?.(incomingCode);
-
-        return;
-      }
-
-      const currentValue = editor.getValue();
-
-      // VERY IMPORTANT:
-      // If both values are already identical,
-      // don't touch Monaco at all.
-      if (currentValue === incomingCode) {
-        return;
-      }
-
-      // Save cursor and selection.
-      const position = editor.getPosition();
-      const selections = editor.getSelections();
 
       isRemoteUpdate.current = true;
 
-      const model = editor.getModel();
+      setCode(content || "");
 
-      if (model) {
-        editor.executeEdits('remote-update', [
-          {
-            range: model.getFullModelRange(),
-            text: incomingCode,
-          },
-        ]);
+      if (language) {
+        setLanguage(language);
       }
 
-      setCode(incomingCode);
-
-      onCodeChangeRef.current?.(incomingCode);
-
-      // Restore cursor/selection after remote update.
-      if (selections && selections.length > 0) {
-        editor.setSelections(selections);
-      } else if (position) {
-        editor.setPosition(position);
-      }
-
-      isRemoteUpdate.current = false;
+      setTimeout(() => {
+        isRemoteUpdate.current = false;
+      }, 0);
     };
 
-    socket.on(ACTIONS.CODE_CHANGE, handleCodeChange);
+    socket.on(ACTIONS.FILE_CONTENT_CHANGE, handleRemoteFileChange);
 
     return () => {
-      socket.off(ACTIONS.CODE_CHANGE, handleCodeChange);
+      socket.off(ACTIONS.FILE_CONTENT_CHANGE, handleRemoteFileChange);
     };
-  }, [socketReady, socketRef]);
+  }, [activeFile?.id, socketRef]);
 
   const handleEditorDidMount = (editor) => {
     editorRef.current = editor;
-
-    const currentValue = editor.getValue();
-
-    setCode(currentValue);
-
-    onCodeChangeRef.current?.(currentValue);
-
-    // Request latest code from server.
-    if (socketRef.current && socketReady) {
-      socketRef.current.emit(ACTIONS.SYNC_CODE, {
-        socketId: socketRef.current.id,
-        roomId,
-      });
-    }
   };
 
-  const handleEditorChange = (value) => {
-    // Ignore changes generated by remote socket updates.
+  /*
+   * -----------------------------------------
+   * Language change
+   * -----------------------------------------
+   */
+
+  const handleLanguageChange = (newLanguage) => {
+    setLanguage(newLanguage);
+    onLanguageChange?.(newLanguage);
+  };
+
+  /*
+   * -----------------------------------------
+   * Code change
+   * -----------------------------------------
+   */
+
+  const handleCodeChange = (value) => {
+    const newCode = value || "";
+
+    setCode(newCode);
+
     if (isRemoteUpdate.current) {
       return;
     }
 
-    const newCode = value || '';
+    onCodeChange?.(newCode);
 
-    setCode(newCode);
-
-    onCodeChangeRef.current?.(newCode);
-
-    // Send local changes to other users.
-    if (socketRef.current && socketReady) {
-      socketRef.current.emit(ACTIONS.CODE_CHANGE, {
-        roomId,
-        code: newCode,
-      });
+    if (!activeFile) {
+      return;
     }
+
+    
+
+    socketRef.current?.emit(ACTIONS.FILE_CONTENT_CHANGE, {
+      roomId,
+      fileId: activeFile.id,
+      content: newCode,
+      language,
+    });
   };
 
-  const handleLanguageChange = (e) => {
-    const newLang = e.target.value;
+  /*
+   * -----------------------------------------
+   * Download file
+   * -----------------------------------------
+   */
 
-    setLanguage(newLang);
+  const handleDownload = () => {
+    if (!activeFile) {
+      return;
+    }
 
-    onLanguageChange?.(newLang);
+    const blob = new Blob([code], {
+      type: "text/plain",
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = activeFile.name;
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#1e1e1e] min-w-0">
-      <div className="flex items-center justify-between p-2 bg-[#1e1e1e] border-b border-[#333]">
-        <div className="relative inline-block">
-          <select
-            value={language}
-            onChange={handleLanguageChange}
-            className="appearance-none bg-[#2d2d2d] text-white rounded px-4 py-2 pr-10 focus:outline-none focus:ring-1 focus:ring-[#EEEEEE] focus:border-transparent hover:bg-[#3d3d3d] transition-colors duration-200 text-sm min-w-[140px]"
-          >
-            {languages.map((lang) => (
-              <option
-                key={lang.value}
-                value={lang.value}
-                className="bg-[#2d2d2d] py-2"
-              >
-                {lang.label}
-              </option>
-            ))}
-          </select>
+    <div className="h-full flex flex-col bg-[#1e1e1e]">
+      {/* ---------------------------------
+                Editor Header
+            --------------------------------- */}
 
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white">
-            <FiChevronDown className="h-4 w-4" />
-          </div>
+      <div className="h-10 flex items-center justify-between bg-[#252526] border-b border-[#333] px-3">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-sm">
+            {activeFile?.type === "folder" ? "📁" : "📄"}
+          </span>
+
+          <span className="text-sm text-gray-300 truncate">
+            {activeFile?.name || "No file selected"}
+          </span>
         </div>
 
-        <span className="text-[#bbb8ff] text-lg">
-          Code Together
-        </span>
-
-        <button
-          onClick={handleDownload}
-          className="bg-[#2d2d2d] text-white rounded px-4 py-2 hover:bg-[#3d3d3d] focus:outline-none focus:ring-1 focus:ring-[#EEEEEE] focus:border-transparent transition-colors duration-200 text-sm flex items-center gap-2"
-        >
-          <FiDownload className="h-4 w-4" />
-          Download
-        </button>
+        {activeFile && (
+          <button
+            onClick={handleDownload}
+            className="text-xs px-3 py-1 rounded bg-[#333] hover:bg-[#444] text-gray-300 hover:text-white"
+          >
+            Download
+          </button>
+        )}
       </div>
 
-      <div className="flex-1 h-[calc(100vh-6rem)] relative">
-        <Editor
-          height="100%"
-          width="100%"
-          theme="vs-dark"
-          language={getMonacoLang(language)}
-          defaultValue={code}
-          onChange={handleEditorChange}
-          onMount={handleEditorDidMount}
-          options={{
-            fontSize: 16,
+      {/* ---------------------------------
+                Language
+            --------------------------------- */}
 
-            minimap: {
-              enabled: false,
-            },
+      <div className="h-9 flex items-center justify-between bg-[#1e1e1e] border-b border-[#2b2b2b] px-3">
+        <select
+          value={language}
+          onChange={(e) => handleLanguageChange(e.target.value)}
+          className="bg-[#252526] text-gray-300 text-xs px-2 py-1 rounded outline-none"
+        >
+          <option value="javascript">JavaScript</option>
 
-            automaticLayout: true,
+          <option value="html">HTML</option>
 
-            scrollBeyondLastLine: false,
+          <option value="css">CSS</option>
 
-            wordWrap: 'off',
+          <option value="python">Python</option>
 
-            smoothScrolling: true,
+          <option value="java">Java</option>
 
-            lineNumbers: 'on',
-          }}
-        />
+          <option value="cpp">C++</option>
+        </select>
+
+        <span className="text-xs text-gray-500">{activeFile?.name || ""}</span>
+      </div>
+
+      {/* ---------------------------------
+                Monaco
+            --------------------------------- */}
+
+      <div className="flex-1 min-h-0">
+        {activeFile ? (
+          <Editor
+            height="100%"
+            theme="vs-dark"
+            language={language}
+            value={code}
+            onMount={handleEditorDidMount}
+            onChange={handleCodeChange}
+            options={{
+              automaticLayout: true,
+              minimap: {
+                enabled: true,
+              },
+              fontSize: 14,
+              tabSize: 4,
+              wordWrap: "on",
+              scrollBeyondLastLine: false,
+              padding: {
+                top: 10,
+              },
+            }}
+          />
+        ) : (
+          <div className="h-full flex items-center justify-center text-gray-500">
+            <div className="text-center">
+              <div className="text-4xl mb-3">📂</div>
+
+              <p>Select a file from Explorer</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

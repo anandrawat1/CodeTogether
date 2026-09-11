@@ -9,6 +9,9 @@ const ACTIONS = {
     RECEIVE_MESSAGE: "receive-message",
     FETCH_MESSAGES: "fetch-messages",
     REQUEST_CODE: "request-code",
+    FILES_SYNC: "files-sync",
+    FILES_UPDATE: "files-update",
+    FILE_CONTENT_CHANGE: "file-content-change",
 };
 
 export default ACTIONS; 
